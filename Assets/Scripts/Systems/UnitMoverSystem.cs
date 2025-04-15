@@ -10,15 +10,17 @@ partial struct UnitMoverSystem : ISystem
     public void OnUpdate(ref SystemState state)
     {
         foreach(
-            (RefRW<LocalTransform> localTransform, RefRO<MoveSpeed> moveSpeed, RefRW<PhysicsVelocity> physicsVelocity)
-            in SystemAPI.Query<RefRW<LocalTransform>, RefRO<MoveSpeed>, RefRW<PhysicsVelocity>>())
+            (RefRW<LocalTransform> localTransform, RefRO<UnitMover> unitMover, RefRW<PhysicsVelocity> physicsVelocity)
+            in SystemAPI.Query<RefRW<LocalTransform>, RefRO<UnitMover>, RefRW<PhysicsVelocity>>())
         {
-            float3 targetPosition = MouseWorldPosition.Instance.GetPosition();
-            float3 moveDirection = targetPosition - localTransform.ValueRO.Position;
+            float3 moveDirection = unitMover.ValueRO.targetPosition - localTransform.ValueRO.Position;
             moveDirection = math.normalize(moveDirection);
 
-            localTransform.ValueRW.Rotation = quaternion.LookRotation(moveDirection, math.up());
-            physicsVelocity.ValueRW.Linear = moveDirection * moveSpeed.ValueRO.value; 
+            localTransform.ValueRW.Rotation = math.slerp(
+                localTransform.ValueRO.Rotation, 
+                quaternion.LookRotation(moveDirection, math.up()), 
+                unitMover.ValueRO.rotationSpeed * SystemAPI.Time.DeltaTime);
+            physicsVelocity.ValueRW.Linear = moveDirection * unitMover.ValueRO.moveSpeed; 
             physicsVelocity.ValueRW.Angular = float3.zero;
         }
     }
