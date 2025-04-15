@@ -13,7 +13,7 @@ partial struct UnitMoverSystem : ISystem
             (RefRW<LocalTransform> localTransform, RefRO<MoveSpeed> moveSpeed, RefRW<PhysicsVelocity> physicsVelocity)
             in SystemAPI.Query<RefRW<LocalTransform>, RefRO<MoveSpeed>, RefRW<PhysicsVelocity>>())
         {
-            float3 targetPosition = localTransform.ValueRO.Position + new float3(5f ,0f, 0f);
+            float3 targetPosition = MouseWorldPosition.Instance.GetPosition();
             float3 moveDirection = targetPosition - localTransform.ValueRO.Position;
             moveDirection = math.normalize(moveDirection);
 
