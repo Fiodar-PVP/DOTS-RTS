@@ -19,7 +19,7 @@ public class SelectedAuthoring : MonoBehaviour
     }
 }
 
-public partial struct Selected : IComponentData, IEnableableComponent
+public struct Selected : IComponentData, IEnableableComponent
 {
     public Entity visualEntity;
 }
