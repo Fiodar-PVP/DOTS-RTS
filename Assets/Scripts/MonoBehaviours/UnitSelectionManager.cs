@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using Unity.Transforms;
 using Unity.Physics;
+using Unity.Mathematics;
 
 public class UnitSelectionManager : MonoBehaviour
 {
@@ -99,11 +100,12 @@ public class UnitSelectionManager : MonoBehaviour
             EntityQuery entityQuery = new EntityQueryBuilder(Allocator.Temp).WithAll<UnitMover, Selected>().Build(entityManager);
             
             NativeArray<UnitMover> unitMoverArray = entityQuery.ToComponentDataArray<UnitMover>(Allocator.Temp);
+            NativeArray<float3> targetPositionArray = GenerateMovePositionArray(targetPosition, unitMoverArray.Length);
 
             for (int i = 0; i < unitMoverArray.Length; i++)
             {
                 UnitMover unitMover = unitMoverArray[i];
-                unitMover.targetPosition = targetPosition;
+                unitMover.targetPosition = targetPositionArray[i];
                 unitMoverArray[i] = unitMover;
             }
 
@@ -120,5 +122,55 @@ public class UnitSelectionManager : MonoBehaviour
         float width = Mathf.Abs(selectionMouseStartPosition.x - selectionMouseCurrentPosition.x);
         float height = Mathf.Abs(selectionMouseStartPosition.y - selectionMouseCurrentPosition.y);
         return new Rect(lowerCornerPositionX, lowerCornerPositionY, width, height);
+    }
+
+    private NativeArray<float3> GenerateMovePositionArray(float3 targetPosition, int positionCount)
+    {
+        NativeArray<float3> movePositionArray = new NativeArray<float3>(positionCount, Allocator.Temp);
+
+        if(positionCount == 0)
+        {
+            return movePositionArray;
+        }
+
+        movePositionArray[0] = targetPosition;
+
+        float radius = 3f;
+        int currentRingIndex = 1;
+        float unitSeparationDistance = 4f;
+        int currentIndex = 1;
+
+        while(currentIndex < positionCount)
+        {
+            float currentRingRadius = currentRingIndex * radius;
+            float perimeter = currentRingRadius * math.PI2;
+            int numberOfUnitsOnRing = (int)math.floor(perimeter/unitSeparationDistance);
+
+            //Evenly distribute the last ring positions if there are not enough units
+            if(numberOfUnitsOnRing > positionCount - currentIndex)
+            {
+                numberOfUnitsOnRing = positionCount - currentIndex;
+            }
+
+            float3 initialPositionOnRing = new float3(currentRingRadius, 0f, 0f);
+            for (int i = 0; i < numberOfUnitsOnRing; i++)
+            {
+
+                float angle = i * math.PI2/numberOfUnitsOnRing;
+                float3 offSetPositionOnRing = math.rotate(quaternion.RotateY(angle), initialPositionOnRing);
+
+                movePositionArray[currentIndex] = offSetPositionOnRing + targetPosition;
+
+                currentIndex++;
+                if(currentIndex >= positionCount)
+                {
+                    break;
+                }
+            }
+
+            currentRingIndex++;
+        }
+
+        return movePositionArray;
     }
 }
