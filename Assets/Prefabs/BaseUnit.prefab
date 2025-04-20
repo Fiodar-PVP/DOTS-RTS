@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 2100721819007424546}
   - component: {fileID: 2254770393031200752}
   - component: {fileID: 7170057753962828710}
+  - component: {fileID: -5158662658183857080}
+  - component: {fileID: -7966791628579841350}
   - component: {fileID: 4696064537042771295}
   - component: {fileID: 527526112946825185}
   m_Layer: 6
@@ -63,6 +65,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faction: 0
+--- !u!114 &-5158662658183857080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 633548429357599731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f095751caa846c143b6c63d73188bceb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value:
+    range: 0
+    targetFaction: 0
+    timer: 0
+    timerMax: 0.2
+--- !u!114 &-7966791628579841350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 633548429357599731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27937c3afe57a3c4daad5839be4d54a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!136 &4696064537042771295
 CapsuleCollider:
   m_ObjectHideFlags: 0

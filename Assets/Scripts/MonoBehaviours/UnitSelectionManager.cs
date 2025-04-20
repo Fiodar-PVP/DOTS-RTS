@@ -13,8 +13,6 @@ public class UnitSelectionManager : MonoBehaviour
 
     public static UnitSelectionManager Instance {  get; private set; }
 
-    [SerializeField] private LayerMask unitLayerMask;
-
     private Vector2 selectionMouseStartPosition;
 
     private void Awake()
@@ -86,7 +84,7 @@ public class UnitSelectionManager : MonoBehaviour
                     Filter = new CollisionFilter
                     {
                         BelongsTo = ~0u,
-                        CollidesWith = (uint)unitLayerMask.value,
+                        CollidesWith = 1 << GameAssets.UNIT_LAYER,
                         GroupIndex = 0
                     }
                 };
