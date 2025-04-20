@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -5158662658183857080, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
+      propertyPath: value.range
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -5158662658183857080, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
+      propertyPath: value.targetFaction
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 633548429357599731, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
       propertyPath: m_Name
       value: ZombieUnit
