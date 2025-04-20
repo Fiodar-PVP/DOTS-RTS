@@ -2,6 +2,8 @@ using Unity.Burst;
 using Unity.Entities;
 using Unity.Rendering;
 
+[UpdateInGroup(typeof(LateSimulationSystemGroup))]
+[UpdateBefore(typeof(ResetEventSystem))]
 partial struct SelectedVisualSystem : ISystem
 {
     [BurstCompile]
@@ -9,7 +11,10 @@ partial struct SelectedVisualSystem : ISystem
     {
         foreach((RefRO<Selected> selected, Entity entity) in SystemAPI.Query<RefRO<Selected>>().WithPresent<Selected>().WithEntityAccess())
         {
-            SystemAPI.SetComponentEnabled<MaterialMeshInfo>(selected.ValueRO.visualEntity, SystemAPI.IsComponentEnabled<Selected>(entity));
+            if(selected.ValueRO.OnSelected || selected.ValueRO.OnDeselected) 
+            {
+                SystemAPI.SetComponentEnabled<MaterialMeshInfo>(selected.ValueRO.visualEntity, SystemAPI.IsComponentEnabled<Selected>(entity));
+            }
         }
     }
 }

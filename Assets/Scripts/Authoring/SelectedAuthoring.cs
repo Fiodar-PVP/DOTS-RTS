@@ -10,9 +10,10 @@ public class SelectedAuthoring : MonoBehaviour
         public override void Bake(SelectedAuthoring authoring)
         {
             Entity entity = GetEntity(authoring, TransformUsageFlags.Dynamic);
-            AddComponent(entity, new Selected 
+            AddComponent(entity, new Selected
             {
-                visualEntity = GetEntity(authoring.visualGameObject, TransformUsageFlags.Dynamic)
+                visualEntity = GetEntity(authoring.visualGameObject, TransformUsageFlags.Dynamic),
+                OnDeselected = true
             });
             SetComponentEnabled<Selected>(entity, false);
         }
@@ -22,6 +23,9 @@ public class SelectedAuthoring : MonoBehaviour
 public struct Selected : IComponentData, IEnableableComponent
 {
     public Entity visualEntity;
+
+    public bool OnSelected;
+    public bool OnDeselected;
 }
 
 
