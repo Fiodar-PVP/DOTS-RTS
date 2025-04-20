@@ -38,6 +38,14 @@ public class UnitSelectionManager : MonoBehaviour
             //Deselect all Units
             EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
             EntityQuery entityQuery = new EntityQueryBuilder(Allocator.Temp).WithAll<Selected>().Build(entityManager);
+            NativeArray<Selected> selectedArray = entityQuery.ToComponentDataArray<Selected>(Allocator.Temp);
+            for (int i = 0; i < selectedArray.Length; i++)
+            {
+                Selected selected = selectedArray[i];
+                selected.OnDeselected = true;
+                selectedArray[i] = selected;
+            }
+            entityQuery.CopyFromComponentDataArray(selectedArray);
             entityManager.SetComponentEnabled<Selected>(entityQuery, false);
 
             Rect selectionAreaRect = GetSelectionArea();
@@ -57,6 +65,9 @@ public class UnitSelectionManager : MonoBehaviour
                     if (selectionAreaRect.Contains(unitScreenPosition))
                     {
                         entityManager.SetComponentEnabled<Selected>(entityArray[i], true);
+                        Selected selected = entityManager.GetComponentData<Selected>(entityArray[i]);
+                        selected.OnSelected = true;
+                        entityManager.SetComponentData(entityArray[i], selected);
                     }
                 }
             }
@@ -86,6 +97,9 @@ public class UnitSelectionManager : MonoBehaviour
                     {
                         //Hit Unit which can be Selected
                         entityManager.SetComponentEnabled<Selected>(raycastHit.Entity, true);
+                        Selected selected = entityManager.GetComponentData<Selected>(raycastHit.Entity);
+                        selected.OnSelected = true;
+                        entityManager.SetComponentData(raycastHit.Entity, selected);
                     }
                 }
             }
