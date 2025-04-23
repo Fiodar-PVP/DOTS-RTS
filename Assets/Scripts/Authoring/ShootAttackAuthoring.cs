@@ -18,6 +18,7 @@ public class ShootAttackAuthoring : MonoBehaviour
 [Serializable]
 public struct ShootAttack : IComponentData
 {
+    public int damageAmount;
     public float timer;
     public float timerMax;
 }
