@@ -5,7 +5,7 @@ using UnityEngine;
 public class BulletAuthoring : MonoBehaviour
 {
     [SerializeField] private Bullet value;
-    public class BulletAuthoringBaker : Baker<BulletAuthoring>
+    public class Baker : Baker<BulletAuthoring>
     {
         public override void Bake(BulletAuthoring authoring)
         {

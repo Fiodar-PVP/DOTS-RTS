@@ -14,6 +14,12 @@ partial struct BulletMoverSystem : ISystem
         foreach((RefRW<LocalTransform> localTransform, RefRO<Bullet> bullet, RefRO<Target> target, Entity entity) 
             in SystemAPI.Query<RefRW<LocalTransform>, RefRO<Bullet>, RefRO<Target>>().WithEntityAccess())
         {
+            if (target.ValueRO.targetEntity == Entity.Null)
+            {
+                entityList.Add(entity);
+                continue;
+            }
+
             RefRO<LocalTransform> targetTransform = SystemAPI.GetComponentRO<LocalTransform>(target.ValueRO.targetEntity);
             float3 moveDirection = targetTransform.ValueRO.Position - localTransform.ValueRO.Position;
             moveDirection = math.normalize(moveDirection);
