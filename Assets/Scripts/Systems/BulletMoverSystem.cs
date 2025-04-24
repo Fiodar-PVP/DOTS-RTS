@@ -20,24 +20,27 @@ partial struct BulletMoverSystem : ISystem
                 continue;
             }
 
-            RefRO<LocalTransform> targetTransform = SystemAPI.GetComponentRO<LocalTransform>(target.ValueRO.targetEntity);
-            float3 moveDirection = targetTransform.ValueRO.Position - localTransform.ValueRO.Position;
+            LocalTransform targetTransform = SystemAPI.GetComponent<LocalTransform>(target.ValueRO.targetEntity);
+            ShootVictim tragetShootVictim = SystemAPI.GetComponent<ShootVictim>(target.ValueRO.targetEntity);
+            float3 targetShootPosition = targetTransform.TransformPoint(tragetShootVictim.hitPositionLocal);
+
+            float3 moveDirection = targetShootPosition - localTransform.ValueRO.Position;
             moveDirection = math.normalize(moveDirection);
 
-            float distanceBefore = math.distancesq(targetTransform.ValueRO.Position, localTransform.ValueRO.Position);
+            float distanceBefore = math.distancesq(targetShootPosition, localTransform.ValueRO.Position);
 
             localTransform.ValueRW.Position += moveDirection * bullet.ValueRO.speed * SystemAPI.Time.DeltaTime;
 
-            float distanceAfter = math.distancesq(targetTransform.ValueRO.Position, localTransform.ValueRO.Position);
+            float distanceAfter = math.distancesq(targetShootPosition, localTransform.ValueRO.Position);
 
             if(distanceAfter > distanceBefore)
             {
                 //Overshoot the target
-                localTransform.ValueRW.Position = targetTransform.ValueRO.Position;
+                localTransform.ValueRW.Position = targetShootPosition;
             }
 
             float destroyDistanceSq = 0.2f;
-            float currentDistanceToTargetSq = math.distancesq(targetTransform.ValueRO.Position, localTransform.ValueRO.Position);
+            float currentDistanceToTargetSq = math.distancesq(targetShootPosition, localTransform.ValueRO.Position);
 
             if(currentDistanceToTargetSq <= destroyDistanceSq)
             {
