@@ -176,6 +176,53 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
+--- !u!1 &285737515
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 285737517}
+  - component: {fileID: 285737516}
+  m_Layer: 0
+  m_Name: ZombieSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &285737516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 285737515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10243fc6d8d12914b9ef886de0e1c638, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value:
+    timer: 0
+    timerMax: 1.5
+--- !u!4 &285737517
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 285737515}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 29.32, y: 0, z: 12.58}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &309044297
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -320,6 +367,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 7878307120338540681, guid: 60c9497222ade6441801bd4f8642a8a3, type: 3}
+  zombiePrefab: {fileID: 6578504330665427228, guid: 3df5fb98c0c2a2b4f97a46f989193ba2, type: 3}
 --- !u!4 &401350612
 Transform:
   m_ObjectHideFlags: 0
@@ -625,6 +673,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 401350612}
+  - {fileID: 285737517}
   - {fileID: 1549876459}
   - {fileID: 325552930}
   - {fileID: 1108332740}
