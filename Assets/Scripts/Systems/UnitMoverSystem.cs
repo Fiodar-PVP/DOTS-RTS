@@ -6,6 +6,8 @@ using Unity.Transforms;
 
 partial struct UnitMoverSystem : ISystem
 {
+    public const float REACHED_TARGET_STOP_DISTANCE_SQ = 2f;
+
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
@@ -24,8 +26,8 @@ public partial struct UnitMoverJob : IJobEntity
     public void Execute(ref LocalTransform localTransform, in UnitMover unitMover, ref PhysicsVelocity physicsVelocity)
     {
         float3 moveDirection = unitMover.targetPosition - localTransform.Position;
-        float targetStopDistanceSq = 2f;
-        if(math.lengthsq(moveDirection) < targetStopDistanceSq)
+        float targetStopDistanceSq = UnitMoverSystem.REACHED_TARGET_STOP_DISTANCE_SQ;
+        if(math.lengthsq(moveDirection) <= targetStopDistanceSq)
         {
             physicsVelocity.Linear = float3.zero;
             physicsVelocity.Angular = float3.zero;
