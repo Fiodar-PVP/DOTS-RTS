@@ -14,7 +14,6 @@ partial struct ResetTargetSystem : ISystem
             {
                 if (!SystemAPI.HasComponent<LocalTransform>(target.ValueRO.targetEntity))
                 {
-                    UnityEngine.Debug.Log("Reseting Target");
                     target.ValueRW.targetEntity = Entity.Null;
                 }
             }
