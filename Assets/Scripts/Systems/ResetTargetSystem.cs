@@ -10,9 +10,13 @@ partial struct ResetTargetSystem : ISystem
     {
         foreach(RefRW<Target> target in SystemAPI.Query<RefRW<Target>>())
         {
-            if(!SystemAPI.HasComponent<LocalTransform>(target.ValueRO.targetEntity))
+            if(target.ValueRO.targetEntity != Entity.Null)
             {
-                target.ValueRW.targetEntity = Entity.Null;
+                if (!SystemAPI.HasComponent<LocalTransform>(target.ValueRO.targetEntity))
+                {
+                    UnityEngine.Debug.Log("Reseting Target");
+                    target.ValueRW.targetEntity = Entity.Null;
+                }
             }
         }
     }
