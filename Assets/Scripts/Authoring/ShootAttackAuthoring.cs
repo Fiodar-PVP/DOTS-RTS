@@ -33,4 +33,11 @@ public struct ShootAttack : IComponentData
     public int damageAmount;
     public float timer;
     public float timerMax;
+    public OnShootEvent onShoot;
+
+    public struct OnShootEvent
+    {
+        public bool isTriggered;
+        public float3 shootFromPosition;
+    }
 }

@@ -390,6 +390,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 7878307120338540681, guid: 60c9497222ade6441801bd4f8642a8a3, type: 3}
   zombiePrefab: {fileID: 6578504330665427228, guid: 3df5fb98c0c2a2b4f97a46f989193ba2, type: 3}
+  shootLightPrefab: {fileID: 1495626338045461662, guid: 5839755c87ee2814e9118476aaeac286, type: 3}
 --- !u!4 &401350612
 Transform:
   m_ObjectHideFlags: 0

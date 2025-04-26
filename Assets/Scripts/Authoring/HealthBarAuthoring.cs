@@ -6,7 +6,7 @@ public class HealthBarAuthoring : MonoBehaviour
     [SerializeField] private GameObject parentGameObject;
     [SerializeField] private GameObject barVisualGameObject;
 
-    public class HealthBarAuthoringBaker : Baker<HealthBarAuthoring>
+    public class Baker : Baker<HealthBarAuthoring>
     {
         public override void Bake(HealthBarAuthoring authoring)
         {
