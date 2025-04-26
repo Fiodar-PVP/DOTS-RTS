@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class HealthAuthoring : MonoBehaviour
 {
-    [SerializeField] private Health value;
+    [SerializeField] private int healthAmount;
+    [SerializeField] private int healthAmountMax;
     public class Baker : Baker<HealthAuthoring>
     {
         public override void Bake(HealthAuthoring authoring)
         {
             Entity entity = GetEntity(authoring, TransformUsageFlags.Dynamic);
-            AddComponent(entity, authoring.value);
+            AddComponent(entity, new Health
+            {
+                healthAmount = authoring.healthAmount,
+                healthAmountMax = authoring.healthAmountMax,
+                onHealthChanged = true
+            });
         }
     }
 }
@@ -19,4 +25,6 @@ public class HealthAuthoring : MonoBehaviour
 public struct Health : IComponentData
 {
     public int healthAmount;
+    public int healthAmountMax;
+    public bool onHealthChanged;
 }
