@@ -1,0 +1,24 @@
+using Unity.Burst;
+using Unity.Collections;
+using Unity.Entities;
+
+partial struct ShootLightDestroySystem : ISystem
+{
+    [BurstCompile]
+    public void OnUpdate(ref SystemState state)
+    {
+        EntityCommandBuffer entityCommandBuffer = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+        NativeList<Entity> entityList = new NativeList<Entity>(Allocator.Temp);
+
+        foreach ((RefRW<ShootLight> shootLight, Entity entity) in SystemAPI.Query<RefRW<ShootLight>>().WithEntityAccess())
+        {
+            shootLight.ValueRW.timer -= SystemAPI.Time.DeltaTime;
+            if(shootLight.ValueRW.timer < 0)
+            {
+                entityList.Add(entity);
+            }
+        }
+
+        entityCommandBuffer.DestroyEntity(entityList.AsArray());
+    }
+}
