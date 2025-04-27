@@ -8,9 +8,14 @@ partial struct RandomWalkingSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        foreach( (RefRO<LocalTransform> localTransform, RefRW<RandomWalking> randomWalking, RefRW<UnitMover> unitMover) in 
-            SystemAPI.Query<RefRO<LocalTransform>, RefRW<RandomWalking>, RefRW<UnitMover>>())
+        foreach((RefRO<LocalTransform> localTransform, RefRW<RandomWalking> randomWalking, RefRW<UnitMover> unitMover, RefRO<Target> target) in 
+            SystemAPI.Query<RefRO<LocalTransform>, RefRW<RandomWalking>, RefRW<UnitMover>, RefRO<Target>>())
         {
+            if(target.ValueRO.targetEntity != Entity.Null)
+            {
+                continue;
+            }
+
             if(math.distancesq(localTransform.ValueRO.Position, randomWalking.ValueRO.targetPosition) < UnitMoverSystem.REACHED_TARGET_STOP_DISTANCE_SQ)
             {
                 //Reached the target position
