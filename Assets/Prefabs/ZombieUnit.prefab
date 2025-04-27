@@ -54,7 +54,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -5158662658183857080, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
       propertyPath: value.range
-      value: 5
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: -5158662658183857080, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
       propertyPath: value.targetFaction
@@ -130,6 +130,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 633548429357599731, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
       insertIndex: 6
       addedObject: {fileID: 8123080533790648320}
+    - targetCorrespondingSourceObject: {fileID: 633548429357599731, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
+      insertIndex: 7
+      addedObject: {fileID: -1793667700566047463}
   m_SourcePrefab: {fileID: 100100000, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
 --- !u!4 &5667245185364054733 stripped
 Transform:
@@ -154,3 +157,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitPositionTransform: {fileID: 7340345479138557678}
+--- !u!114 &-1793667700566047463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6578504330665427228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2a3c79f644a5824081accca82ac420c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timerMax: 0.5
+  damageAmount: 10
+  colliderSize: 0.5
