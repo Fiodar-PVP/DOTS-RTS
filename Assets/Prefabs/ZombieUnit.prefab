@@ -112,6 +112,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2254770393031200752, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
+      propertyPath: moveSpeed
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2911124055523515102, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
       propertyPath: m_Mesh
       value: 
