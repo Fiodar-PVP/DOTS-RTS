@@ -1,3 +1,5 @@
+using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -6,6 +8,17 @@ using UnityEngine;
 [UpdateInGroup(typeof(LateSimulationSystemGroup))]
 partial struct HealthBarSystem : ISystem
 {
+    private ComponentLookup<Health> healthComponentLookup;
+    private ComponentLookup<LocalTransform> localTransformComponentLookup;
+    private ComponentLookup<PostTransformMatrix> postTransformMatrixComponentLookup;
+
+    public void OnCreate(ref SystemState state)
+    {
+        healthComponentLookup = SystemAPI.GetComponentLookup<Health>(true);
+        localTransformComponentLookup = SystemAPI.GetComponentLookup<LocalTransform>(false);
+        postTransformMatrixComponentLookup = SystemAPI.GetComponentLookup<PostTransformMatrix>(false);
+    }
+
     public void OnUpdate(ref SystemState state)
     {
         Vector3 cameraForward = Vector3.zero;
@@ -14,35 +27,58 @@ partial struct HealthBarSystem : ISystem
             cameraForward = Camera.main.transform.forward;
         }
 
-        foreach((RefRW<LocalTransform> localTransform, RefRO<HealthBar> healthBar) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<HealthBar>>())
+        healthComponentLookup.Update(ref state);
+        localTransformComponentLookup.Update(ref state);
+        postTransformMatrixComponentLookup.Update(ref state);
+
+        HealthBarJob healthBarJob = new HealthBarJob
         {
-            LocalTransform parentLocalTransform = SystemAPI.GetComponent<LocalTransform>(healthBar.ValueRO.parentEntity);
-            if(localTransform.ValueRO.Scale == 1f)
-            {
-                localTransform.ValueRW.Rotation = parentLocalTransform.InverseTransformRotation(quaternion.LookRotation(cameraForward, math.up()));
-            }
+            cameraForward = cameraForward,
+            healthComponentLookup = healthComponentLookup,
+            localTransformComponentLookup = localTransformComponentLookup,
+            postTransformMatrixComponentLookup = postTransformMatrixComponentLookup
+        };
+        healthBarJob.ScheduleParallel();
+    }
+}
 
-            Health health = SystemAPI.GetComponent<Health>(healthBar.ValueRO.parentEntity);
+[BurstCompile]
+public partial struct HealthBarJob : IJobEntity
+{
+    public float3 cameraForward;
 
-            if(!health.onHealthChanged)
-            {
-                continue;
-            }
+    [ReadOnly] public ComponentLookup<Health> healthComponentLookup;
+    [NativeDisableParallelForRestriction] public ComponentLookup<LocalTransform> localTransformComponentLookup;
+    [NativeDisableParallelForRestriction] public ComponentLookup<PostTransformMatrix> postTransformMatrixComponentLookup;
 
-            float healthNormalized = (float)health.healthAmount / health.healthAmountMax;
-
-            if(healthNormalized == 1f)
-            {
-                localTransform.ValueRW.Scale = 0f;
-            }
-            else
-            {
-                localTransform.ValueRW.Scale = 1f;
-            }
-
-            RefRW<PostTransformMatrix> barVisualPostTransformMatrix = SystemAPI.GetComponentRW<PostTransformMatrix>(healthBar.ValueRO.barVisualEntity);
-            barVisualPostTransformMatrix.ValueRW.Value = float4x4.Scale(healthNormalized, 1f, 1f);
-
+    public void Execute(in HealthBar healthBar, Entity entity)
+    {
+        RefRW<LocalTransform> localTransform = localTransformComponentLookup.GetRefRW(entity);
+        LocalTransform parentLocalTransform = localTransformComponentLookup[healthBar.parentEntity];
+        if (localTransform.ValueRO.Scale == 1f)
+        {
+            localTransform.ValueRW.Rotation = parentLocalTransform.InverseTransformRotation(quaternion.LookRotation(cameraForward, math.up()));
         }
+
+        Health health = healthComponentLookup[healthBar.parentEntity];
+
+        if (!health.onHealthChanged)
+        {
+            return;
+        }
+
+        float healthNormalized = (float)health.healthAmount / health.healthAmountMax;
+
+        if (healthNormalized == 1f)
+        {
+            localTransform.ValueRW.Scale = 0f;
+        }
+        else
+        {
+            localTransform.ValueRW.Scale = 1f;
+        }
+
+        RefRW<PostTransformMatrix> barVisualPostTransformMatrix = postTransformMatrixComponentLookup.GetRefRW(healthBar.barVisualEntity);
+        barVisualPostTransformMatrix.ValueRW.Value = float4x4.Scale(healthNormalized, 1f, 1f);
     }
 }
