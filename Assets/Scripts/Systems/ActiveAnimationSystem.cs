@@ -23,27 +23,24 @@ partial struct ActiveAnimationSystem : ISystem
                 RefRW<MaterialMeshInfo>,
                 RefRW<ActiveAnimation>>())
         {
-            if (!activeAnimation.ValueRO.activeAnimation.IsCreated)
-            {
-                activeAnimation.ValueRW.activeAnimation = animationDataHolder.soldierIdle;
-            }
-
             if(Input.GetKeyDown(KeyCode.T)) 
             {
-                activeAnimation.ValueRW.activeAnimation = animationDataHolder.soldierIdle;
+                activeAnimation.ValueRW.activeAnimationType = AnimationType.SoldierIdle;
             }
 
             if (Input.GetKeyDown(KeyCode.Y))
             {
-                activeAnimation.ValueRW.activeAnimation = animationDataHolder.soldierWalk;
+                activeAnimation.ValueRW.activeAnimationType = AnimationType.SoldierWalk;
             }
 
+            ref AnimationData animationData = ref animationDataHolder.animationDataBlobArrayBlobAssetReference.Value[(int)activeAnimation.ValueRW.activeAnimationType];
+
             activeAnimation.ValueRW.frameTimer += SystemAPI.Time.DeltaTime;
-            if(activeAnimation.ValueRO.frameTimer > activeAnimation.ValueRO.activeAnimation.Value.frameTimerMax)
+            if(activeAnimation.ValueRO.frameTimer > animationData.frameTimerMax)
             {
-                activeAnimation.ValueRW.frameTimer -= activeAnimation.ValueRO.activeAnimation.Value.frameTimerMax;
-                activeAnimation.ValueRW.frame = (activeAnimation.ValueRO.frame + 1) % activeAnimation.ValueRO.activeAnimation.Value.frameMax;
-                materialMeshInfo.ValueRW.MeshID = activeAnimation.ValueRO.activeAnimation.Value.batchMeshArray[activeAnimation.ValueRW.frame];
+                activeAnimation.ValueRW.frameTimer -= animationData.frameTimerMax;
+                activeAnimation.ValueRW.frame = (activeAnimation.ValueRO.frame + 1) % animationData.frameMax;
+                materialMeshInfo.ValueRW.MeshID = animationData.batchMeshArray[activeAnimation.ValueRW.frame];
             }
         }
     }
