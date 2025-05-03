@@ -693,8 +693,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b7b5e97ee4b6c24daf79df4b07d84a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soldierIdle: {fileID: 11400000, guid: 18626fac383d78d409dc396353ef1965, type: 2}
-  soldierWalk: {fileID: 11400000, guid: 01dbd8a7377b6d5479c2afef08104588, type: 2}
+  animationDataListSO: {fileID: 11400000, guid: 85b114ecbd25ed8498094b6e5ede36e3, type: 2}
 --- !u!4 &1713314537
 Transform:
   m_ObjectHideFlags: 0
