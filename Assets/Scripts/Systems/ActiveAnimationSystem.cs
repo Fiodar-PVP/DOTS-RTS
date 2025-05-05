@@ -25,12 +25,12 @@ partial struct ActiveAnimationSystem : ISystem
         {
             if(Input.GetKeyDown(KeyCode.T)) 
             {
-                activeAnimation.ValueRW.activeAnimationType = AnimationType.SoldierIdle;
+                activeAnimation.ValueRW.nextAnimationType = AnimationType.SoldierIdle;
             }
 
             if (Input.GetKeyDown(KeyCode.Y))
             {
-                activeAnimation.ValueRW.activeAnimationType = AnimationType.SoldierWalk;
+                activeAnimation.ValueRW.nextAnimationType = AnimationType.SoldierWalk;
             }
 
             ref AnimationData animationData = ref animationDataHolder.animationDataBlobArrayBlobAssetReference.Value[(int)activeAnimation.ValueRW.activeAnimationType];
