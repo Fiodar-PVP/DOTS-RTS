@@ -154,6 +154,26 @@ PrefabInstance:
       propertyPath: faction
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1807021587078780946, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
+      propertyPath: aimAnimationType
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1807021587078780946, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
+      propertyPath: idleAnimationType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1807021587078780946, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
+      propertyPath: walkAnimationType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1807021587078780946, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
+      propertyPath: shootAnimationType
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1815508673535486195, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
+      propertyPath: nextAnimationType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2100721819007424546, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
