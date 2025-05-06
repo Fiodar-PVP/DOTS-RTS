@@ -1,16 +1,28 @@
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
+using Unity.Jobs;
 
 [UpdateInGroup(typeof(LateSimulationSystemGroup), OrderLast = true)]
 partial struct ResetEventSystem : ISystem
 {
+    private NativeArray<JobHandle> jobHandleNativeArray;
+    
+    [BurstCompile]
+    public void OnCreate(ref SystemState state)
+    {
+        jobHandleNativeArray = new NativeArray<JobHandle>(4, Allocator.Persistent);
+    }
+
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        new ResetSeletedEventJob().ScheduleParallel();
-        new ResetHealthEventJob().ScheduleParallel();
-        new ResetShootAttackEventJob().ScheduleParallel();
-        new ResetMeleeAttackEventJob().ScheduleParallel();
+        jobHandleNativeArray[0] = new ResetSeletedEventJob().ScheduleParallel(state.Dependency);
+        jobHandleNativeArray[1] = new ResetHealthEventJob().ScheduleParallel(state.Dependency);
+        jobHandleNativeArray[2] = new ResetShootAttackEventJob().ScheduleParallel(state.Dependency);
+        jobHandleNativeArray[3] = new ResetMeleeAttackEventJob().ScheduleParallel(state.Dependency);
+
+        state.Dependency = JobHandle.CombineDependencies(jobHandleNativeArray);
     }
 }
 

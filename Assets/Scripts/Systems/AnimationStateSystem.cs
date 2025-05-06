@@ -1,74 +1,104 @@
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 
 [UpdateAfter(typeof(ShootAttackSystem))]
 partial struct AnimationStateSystem : ISystem
 {
+    private ComponentLookup<ActiveAnimation> activeAnimationComponentLookup;
+    
+    [BurstCompile]
+    public void OnCreate(ref SystemState state) 
+    {
+        activeAnimationComponentLookup = SystemAPI.GetComponentLookup<ActiveAnimation>(false);
+    }
+
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        foreach((
-            RefRO<AnimatedMesh> animatedMesh, 
-            RefRO<UnitMover> unitMover,
-            RefRO<UnitAnimations> unitAnimations) 
-            in SystemAPI.Query<
-                RefRO<AnimatedMesh>, 
-                RefRO<UnitMover>,
-                RefRO<UnitAnimations>>())
-        {
-            RefRW<ActiveAnimation> activeAnimation = SystemAPI.GetComponentRW<ActiveAnimation>(animatedMesh.ValueRO.meshEntity);
+        activeAnimationComponentLookup.Update(ref state);
 
-            if(unitMover.ValueRO.isMoving)
-            {
-                activeAnimation.ValueRW.nextAnimationType = unitAnimations.ValueRO.walkAnimationType;
-            }
-            else
-            {
-                activeAnimation.ValueRW.nextAnimationType = unitAnimations.ValueRO.idleAnimationType;
-            }
+        IdleWalkingAnimationJob unitMoveAnimationJob = new IdleWalkingAnimationJob
+        {
+            activeAnimationComponentLookup = activeAnimationComponentLookup,
+        };
+        unitMoveAnimationJob.ScheduleParallel();
+
+        AimShootAnimationJob shootAnimationJob = new AimShootAnimationJob
+        {
+            activeAnimationComponentLookup = activeAnimationComponentLookup,
+        };
+        shootAnimationJob.ScheduleParallel();
+
+        MeleeAttackAnimationJob meleeAttackAnimationJob = new MeleeAttackAnimationJob
+        {
+            activeAnimationComponentLookup = activeAnimationComponentLookup,
+        };
+        meleeAttackAnimationJob.ScheduleParallel();
+    }
+}
+
+[BurstCompile]
+public partial struct IdleWalkingAnimationJob : IJobEntity
+{
+    [NativeDisableParallelForRestriction] public ComponentLookup<ActiveAnimation> activeAnimationComponentLookup;
+    
+    public void Execute(
+        in AnimatedMesh animatedMesh, 
+        in UnitMover unitMover, 
+        in UnitAnimations unitAnimations)
+    {
+        RefRW<ActiveAnimation> activeAnimation = activeAnimationComponentLookup.GetRefRW(animatedMesh.meshEntity);
+        
+        if (unitMover.isMoving)
+        {
+            activeAnimation.ValueRW.nextAnimationType = unitAnimations.walkAnimationType;
+        }
+        else
+        {
+            activeAnimation.ValueRW.nextAnimationType = unitAnimations.idleAnimationType;
+        }
+    }
+}
+
+[BurstCompile]
+public partial struct AimShootAnimationJob : IJobEntity
+{
+    [NativeDisableParallelForRestriction] public ComponentLookup<ActiveAnimation> activeAnimationComponentLookup;
+    
+    public void Execute(
+        in AnimatedMesh animatedMesh, 
+        in UnitMover unitMover, 
+        in ShootAttack shootAttack, 
+        in Target target, 
+        in UnitAnimations unitAnimations)
+    {
+        RefRW<ActiveAnimation> activeAnimation = activeAnimationComponentLookup.GetRefRW(animatedMesh.meshEntity);
+
+        if (unitMover.isMoving == false && target.targetEntity != Entity.Null)
+        {
+            activeAnimation.ValueRW.nextAnimationType = unitAnimations.aimAnimationType;
         }
 
-        foreach ((
-            RefRO<AnimatedMesh> animatedMesh,
-            RefRO<UnitMover> unitMover,
-            RefRO<ShootAttack> shootAttack,
-            RefRO<Target> target,
-            RefRO<UnitAnimations> unitAnimations)
-            in SystemAPI.Query<
-                RefRO<AnimatedMesh>,
-                RefRO<UnitMover>,
-                RefRO<ShootAttack>,
-                RefRO<Target>,
-                RefRO<UnitAnimations>>())
+        if (shootAttack.onShoot.isTriggered)
         {
-            RefRW<ActiveAnimation> activeAnimation = SystemAPI.GetComponentRW<ActiveAnimation>(animatedMesh.ValueRO.meshEntity);
-
-            if (unitMover.ValueRO.isMoving == false && target.ValueRO.targetEntity != Entity.Null)
-            {
-                activeAnimation.ValueRW.nextAnimationType = unitAnimations.ValueRO.aimAnimationType;
-            }
-
-            if (shootAttack.ValueRO.onShoot.isTriggered)
-            {
-                activeAnimation.ValueRW.nextAnimationType = unitAnimations.ValueRO.shootAnimationType;
-            }
+            activeAnimation.ValueRW.nextAnimationType = unitAnimations.shootAnimationType;
         }
+    }
+}
 
-        foreach ((
-            RefRO<AnimatedMesh> animatedMesh,
-            RefRO<MeleeAttack> meleeAttack,
-            RefRO<UnitAnimations> unitAnimations)
-            in SystemAPI.Query<
-                RefRO<AnimatedMesh>,
-                RefRO<MeleeAttack>,
-                RefRO<UnitAnimations>>())
+[BurstCompile]
+public partial struct MeleeAttackAnimationJob : IJobEntity
+{
+    [NativeDisableParallelForRestriction] public ComponentLookup<ActiveAnimation> activeAnimationComponentLookup;
+
+    public void Execute(in AnimatedMesh animatedMesh, in MeleeAttack meleeAttack, in UnitAnimations unitAnimations)
+    {
+        RefRW<ActiveAnimation> activeAnimation = activeAnimationComponentLookup.GetRefRW(animatedMesh.meshEntity);
+
+        if (meleeAttack.onAttack)
         {
-            RefRW<ActiveAnimation> activeAnimation = SystemAPI.GetComponentRW<ActiveAnimation>(animatedMesh.ValueRO.meshEntity);
-
-            if (meleeAttack.ValueRO.onAttack)
-            {
-                activeAnimation.ValueRW.nextAnimationType = unitAnimations.ValueRO.meleeAttackAnimationType;
-            }
+            activeAnimation.ValueRW.nextAnimationType = unitAnimations.meleeAttackAnimationType;
         }
     }
 }

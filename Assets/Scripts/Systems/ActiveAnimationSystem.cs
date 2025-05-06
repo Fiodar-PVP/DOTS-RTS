@@ -1,7 +1,6 @@
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Rendering;
-using UnityEngine;
 
 partial struct ActiveAnimationSystem : ISystem
 {
@@ -16,41 +15,40 @@ partial struct ActiveAnimationSystem : ISystem
     {
         AnimationDataHolder animationDataHolder = SystemAPI.GetSingleton<AnimationDataHolder>();
 
-        foreach ((
-            RefRW<MaterialMeshInfo> materialMeshInfo,
-            RefRW<ActiveAnimation> activeAnimation)
-            in SystemAPI.Query<
-                RefRW<MaterialMeshInfo>,
-                RefRW<ActiveAnimation>>())
+        ActiveAnimationJob activeAnimationJob = new ActiveAnimationJob
         {
-            if(Input.GetKeyDown(KeyCode.T)) 
+            deltaTime = SystemAPI.Time.DeltaTime,
+            animationDataHolder = animationDataHolder,
+        };
+        activeAnimationJob.ScheduleParallel();
+    }
+}
+
+[BurstCompile]
+public partial struct ActiveAnimationJob : IJobEntity
+{
+    public float deltaTime;
+    public AnimationDataHolder animationDataHolder;
+    public void Execute(ref MaterialMeshInfo materialMeshInfo, ref ActiveAnimation activeAnimation)
+    {
+        ref AnimationData animationData = 
+            ref animationDataHolder.animationDataBlobArrayBlobAssetReference.Value[(int)activeAnimation.activeAnimationType];
+        
+        activeAnimation.frameTimer += deltaTime;
+        if (activeAnimation.frameTimer > animationData.frameTimerMax)
+        {
+            activeAnimation.frameTimer -= animationData.frameTimerMax;
+            activeAnimation.frame = (activeAnimation.frame + 1) % animationData.frameMax;
+            materialMeshInfo.MeshID = animationData.batchMeshArray[activeAnimation.frame];
+        
+            if (activeAnimation.frame == 0 && activeAnimation.activeAnimationType == AnimationType.SoldierShoot)
             {
-                activeAnimation.ValueRW.nextAnimationType = AnimationType.SoldierIdle;
+                activeAnimation.activeAnimationType = AnimationType.None;
             }
-
-            if (Input.GetKeyDown(KeyCode.Y))
+        
+            if (activeAnimation.frame == 0 && activeAnimation.activeAnimationType == AnimationType.ZombieAttack)
             {
-                activeAnimation.ValueRW.nextAnimationType = AnimationType.SoldierWalk;
-            }
-
-            ref AnimationData animationData = ref animationDataHolder.animationDataBlobArrayBlobAssetReference.Value[(int)activeAnimation.ValueRW.activeAnimationType];
-
-            activeAnimation.ValueRW.frameTimer += SystemAPI.Time.DeltaTime;
-            if(activeAnimation.ValueRO.frameTimer > animationData.frameTimerMax)
-            {
-                activeAnimation.ValueRW.frameTimer -= animationData.frameTimerMax;
-                activeAnimation.ValueRW.frame = (activeAnimation.ValueRO.frame + 1) % animationData.frameMax;
-                materialMeshInfo.ValueRW.MeshID = animationData.batchMeshArray[activeAnimation.ValueRW.frame];
-
-                if(activeAnimation.ValueRO.frame == 0 && activeAnimation.ValueRO.activeAnimationType == AnimationType.SoldierShoot)
-                {
-                    activeAnimation.ValueRW.activeAnimationType = AnimationType.None;
-                }
-
-                if (activeAnimation.ValueRO.frame == 0 && activeAnimation.ValueRO.activeAnimationType == AnimationType.ZombieAttack)
-                {
-                    activeAnimation.ValueRW.activeAnimationType = AnimationType.None;
-                }
+                activeAnimation.activeAnimationType = AnimationType.None;
             }
         }
     }
