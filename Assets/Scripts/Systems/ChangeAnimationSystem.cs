@@ -49,7 +49,7 @@ public partial struct ChangeAnimationJob : IJobEntity
 
                 ref AnimationData animationData =
                     ref animationDataHolder.animationDataBlobArrayBlobAssetReference.Value[(int)activeAnimation.activeAnimationType];
-                materialMeshInfo.MeshID = animationData.batchMeshArray[0];
+                materialMeshInfo.Mesh = animationData.intMeshArray[0];
             }
         }
     }
