@@ -43,7 +43,7 @@ partial struct FindTargetSystem : ISystem
             CollisionFilter filter = new CollisionFilter
             {
                 BelongsTo = ~0u,
-                CollidesWith = 1 << GameAssets.UNIT_LAYER,
+                CollidesWith = 1 << GameAssets.UNIT_LAYER | 1 << GameAssets.BUILDINGS_LAYER,
                 GroupIndex = 0,
             };
 
@@ -68,8 +68,8 @@ partial struct FindTargetSystem : ISystem
                         continue;
                     }
 
-                    Unit targetUnit = SystemAPI.GetComponent<Unit>(distanceHit.Entity);
-                    if(findTarget.ValueRO.targetFaction == targetUnit.faction)
+                    Faction targetFaction = SystemAPI.GetComponent<Faction>(distanceHit.Entity);
+                    if(findTarget.ValueRO.targetFaction == targetFaction.factionType)
                     {
                         if(closestTargetEntity == Entity.Null)
                         {
