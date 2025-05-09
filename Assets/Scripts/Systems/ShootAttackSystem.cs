@@ -19,15 +19,13 @@ partial struct ShootAttackSystem : ISystem
             RefRW<LocalTransform> localTransform, 
             RefRW<UnitMover> unitMover, 
             RefRW<ShootAttack> shootAttack, 
-            RefRO<Target> target, 
-            Entity entity) 
+            RefRO<Target> target) 
             in SystemAPI.Query<
                 RefRW<LocalTransform>, 
                 RefRW<UnitMover>, 
                 RefRW<ShootAttack>, 
                 RefRO<Target>>().
-                WithDisabled<MoveOverride>().
-                WithEntityAccess())
+                WithDisabled<MoveOverride>())
         {
             if(target.ValueRO.targetEntity == Entity.Null)
             {
@@ -53,16 +51,45 @@ partial struct ShootAttackSystem : ISystem
                 localTransform.ValueRO.Rotation,
                 quaternion.LookRotation(aimDirection, math.up()), 
                 SystemAPI.Time.DeltaTime * unitMover.ValueRO.rotationSpeed);
+        }
+
+        foreach ((
+            RefRW<LocalTransform> localTransform,
+            RefRW<ShootAttack> shootAttack,
+            RefRO<Target> target,
+            Entity entity)
+            in SystemAPI.Query<
+                RefRW<LocalTransform>,
+                RefRW<ShootAttack>,
+                RefRO<Target>>().
+                WithEntityAccess())
+        {
+            if (target.ValueRO.targetEntity == Entity.Null)
+            {
+                continue;
+            }
+
+            LocalTransform targetLocalTransform = SystemAPI.GetComponent<LocalTransform>(target.ValueRO.targetEntity);
+            if (shootAttack.ValueRO.attackDistanceSq < math.distancesq(targetLocalTransform.Position, localTransform.ValueRO.Position))
+            {
+                continue;
+            }
+
+            if(SystemAPI.HasComponent<MoveOverride>(entity) && SystemAPI.IsComponentEnabled<MoveOverride>(entity))
+            {
+                continue;
+            }
 
             shootAttack.ValueRW.timer -= SystemAPI.Time.DeltaTime;
-            if(shootAttack.ValueRW.timer > 0)
+            if (shootAttack.ValueRW.timer > 0)
             {
                 //Timer has not elapsed yet
                 continue;
             }
             shootAttack.ValueRW.timer = shootAttack.ValueRO.timerMax;
 
-            if(SystemAPI.HasComponent<TargetOverride>(target.ValueRO.targetEntity))
+
+            if (SystemAPI.HasComponent<TargetOverride>(target.ValueRO.targetEntity))
             {
                 RefRW<TargetOverride> enemyTargetOverride = SystemAPI.GetComponentRW<TargetOverride>(target.ValueRO.targetEntity);
                 if (enemyTargetOverride.ValueRW.targetEntity == Entity.Null)
@@ -73,7 +100,7 @@ partial struct ShootAttackSystem : ISystem
 
             Entity bulletEntity = state.EntityManager.Instantiate(entitiesReferences.bulletPrefabEntity);
             float3 bulletSpawnWorldPosition = localTransform.ValueRO.TransformPoint(shootAttack.ValueRO.bulletSpawnLocalPosition);
-            SystemAPI.SetComponent(bulletEntity,LocalTransform.FromPosition(bulletSpawnWorldPosition));
+            SystemAPI.SetComponent(bulletEntity, LocalTransform.FromPosition(bulletSpawnWorldPosition));
 
             RefRW<Bullet> bullet = SystemAPI.GetComponentRW<Bullet>(bulletEntity);
             bullet.ValueRW.damageAmount = shootAttack.ValueRO.damageAmount;
