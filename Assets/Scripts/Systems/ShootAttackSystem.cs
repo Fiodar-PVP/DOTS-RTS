@@ -72,11 +72,13 @@ partial struct ShootAttackSystem : ISystem
             LocalTransform targetLocalTransform = SystemAPI.GetComponent<LocalTransform>(target.ValueRO.targetEntity);
             if (shootAttack.ValueRO.attackDistanceSq < math.distancesq(targetLocalTransform.Position, localTransform.ValueRO.Position))
             {
+                //Target is too far
                 continue;
             }
 
             if(SystemAPI.HasComponent<MoveOverride>(entity) && SystemAPI.IsComponentEnabled<MoveOverride>(entity))
             {
+                //Move Override is active
                 continue;
             }
 
