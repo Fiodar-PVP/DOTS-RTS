@@ -146,6 +146,10 @@ PrefabInstance:
       propertyPath: value.targetFaction
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: -1715086608514547980, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
+      propertyPath: factionType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 633548429357599731, guid: 727181dd5a0009a46ab5e2acf65e0f0a, type: 3}
       propertyPath: m_Name
       value: SoldierUnit

@@ -22,4 +22,6 @@ public struct ZombieSpawner : IComponentData
     public float timerMax;
     public float randomWalkingDistanceMin;
     public float randomWalkingDistanceMax;
+    public int nearbyZombieAmountMax;
+    public float nearbyZombieDistanceMax;
 }
