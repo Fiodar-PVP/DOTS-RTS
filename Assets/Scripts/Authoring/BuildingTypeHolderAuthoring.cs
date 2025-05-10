@@ -1,15 +1,15 @@
 using Unity.Entities;
 using UnityEngine;
 
-public class BuildingDataSOHolderAuthoring : MonoBehaviour
+public class BuildingTypeHolderAuthoring : MonoBehaviour
 {
     [SerializeField] private BuildingType buildingType;
-    public class Baker : Baker<BuildingDataSOHolderAuthoring>
+    public class Baker : Baker<BuildingTypeHolderAuthoring>
     {
-        public override void Bake(BuildingDataSOHolderAuthoring authoring)
+        public override void Bake(BuildingTypeHolderAuthoring authoring)
         {
             Entity entity = GetEntity(authoring, TransformUsageFlags.Dynamic);
-            AddComponent(entity, new BuildingDataSOHolder
+            AddComponent(entity, new BuildingTypeHolder
             {
                 buildingType = authoring.buildingType
             });
@@ -17,7 +17,7 @@ public class BuildingDataSOHolderAuthoring : MonoBehaviour
     }
 }
 
-public struct BuildingDataSOHolder : IComponentData
+public struct BuildingTypeHolder : IComponentData
 {
     public BuildingType buildingType;
 }
