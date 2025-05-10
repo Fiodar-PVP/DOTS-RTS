@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: None
   m_EditorClassIdentifier: 
   unitType: 0
+  progressMax: 1

@@ -2,5 +2,6 @@ public enum BuildingType
 {
     None,
     ZombieSpawner,
-    Tower
+    Tower,
+    Barrack
 }

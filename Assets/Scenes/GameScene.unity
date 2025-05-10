@@ -1011,6 +1011,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ab38f93c28fae64494dfbaf40ab4a3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitTypeSOList: {fileID: 11400000, guid: 358e11298c4592a48917db7f51a653f2, type: 2}
 --- !u!4 &2053179664
 Transform:
   m_ObjectHideFlags: 0

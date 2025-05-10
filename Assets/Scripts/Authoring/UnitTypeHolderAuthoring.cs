@@ -9,6 +9,11 @@ public class UnitTypeHolderAuthoring : MonoBehaviour
     {
         public override void Bake(UnitTypeHolderAuthoring authoring)
         {
+            Entity entity = GetEntity(authoring, TransformUsageFlags.Dynamic);
+            AddComponent(entity, new UnitTypeHolder
+            {
+                unitType = authoring.unitType
+            });
         }
     }
 }

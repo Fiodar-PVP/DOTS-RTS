@@ -5,7 +5,6 @@ using System;
 using Unity.Transforms;
 using Unity.Physics;
 using Unity.Mathematics;
-using TMPro;
 
 public class UnitSelectionManager : MonoBehaviour
 {
@@ -67,6 +66,8 @@ public class UnitSelectionManager : MonoBehaviour
             {
                 MoveSelectedUnitsToTargetPosition(targetPosition);
             }
+
+            SetBuildingBarrackRallyPosition();
         }
     }
 
@@ -147,6 +148,24 @@ public class UnitSelectionManager : MonoBehaviour
         entityQuery.CopyFromComponentDataArray(targetOverrideArray);
     }
 
+    public void SetBuildingBarrackRallyPosition()
+    {
+        Vector3 mouseWorldPosition = MouseWorldPosition.Instance.GetPosition();
+
+        EntityQuery entityQuery = new EntityQueryBuilder(Allocator.Temp).WithAll<Selected, BuildingBarrack>().Build(entityManager);
+
+        NativeArray<BuildingBarrack> buildingBarrackArray = entityQuery.ToComponentDataArray<BuildingBarrack>(Allocator.Temp);
+
+        for (int i = 0; i < buildingBarrackArray.Length; i++)
+        {
+            BuildingBarrack buildingBarrack = buildingBarrackArray[i];
+            buildingBarrack.rallyPosition = mouseWorldPosition;
+            buildingBarrackArray[i] = buildingBarrack;
+        }
+
+        entityQuery.CopyFromComponentDataArray(buildingBarrackArray);
+    }
+
     private void DeselectAllUnits()
     {
         EntityQuery entityQuery = new EntityQueryBuilder(Allocator.Temp).WithAll<Selected>().Build(entityManager);
@@ -193,16 +212,16 @@ public class UnitSelectionManager : MonoBehaviour
             Filter = new CollisionFilter
             {
                 BelongsTo = ~0u,
-                CollidesWith = 1 << GameAssets.UNIT_LAYER,
+                CollidesWith = 1 << GameAssets.UNIT_LAYER | 1 << GameAssets.BUILDINGS_LAYER,
                 GroupIndex = 0
             }
         };
 
         if (collisionWorld.CastRay(raycaseInput, out Unity.Physics.RaycastHit raycastHit))
         {
-            if (entityManager.HasComponent<Unit>(raycastHit.Entity) && entityManager.HasComponent<Selected>(raycastHit.Entity))
+            if (entityManager.HasComponent<Selected>(raycastHit.Entity))
             {
-                //Hit Unit which can be Selected
+                //Hit Selectable object
                 entityManager.SetComponentEnabled<Selected>(raycastHit.Entity, true);
                 Selected selected = entityManager.GetComponentData<Selected>(raycastHit.Entity);
                 selected.OnSelected = true;

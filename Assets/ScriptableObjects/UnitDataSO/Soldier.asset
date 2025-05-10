@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Soldier
   m_EditorClassIdentifier: 
   unitType: 1
+  progressMax: 2
