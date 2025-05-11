@@ -5,11 +5,13 @@ using System;
 using Unity.Transforms;
 using Unity.Physics;
 using Unity.Mathematics;
+using UnityEngine.EventSystems;
 
 public class UnitSelectionManager : MonoBehaviour
 {
     public event EventHandler OnSelectionStart;
     public event EventHandler OnSelectionEnd;
+    public event EventHandler OnSelectedChanged;
 
     public static UnitSelectionManager Instance { get; private set; }
 
@@ -28,6 +30,11 @@ public class UnitSelectionManager : MonoBehaviour
 
     private void Update()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             selectionMouseStartPosition = Input.mousePosition;
@@ -54,6 +61,7 @@ public class UnitSelectionManager : MonoBehaviour
             }
 
             OnSelectionEnd?.Invoke(this, EventArgs.Empty);
+            OnSelectedChanged?.Invoke(this, EventArgs.Empty);
         }
 
         if (Input.GetMouseButtonDown(1))
