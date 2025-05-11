@@ -6,6 +6,7 @@ public class UnitDataSO : ScriptableObject
 {
     public UnitType unitType;
     public float progressMax;
+    public Sprite sprite;
 
     public Entity GetPrefabEntity(EntitiesReferences entitiesReferences)
     {
