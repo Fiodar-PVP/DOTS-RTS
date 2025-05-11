@@ -15,6 +15,26 @@ partial struct BuildingBarrackSystem : ISystem
         EntitiesReferences entitiesReferences = SystemAPI.GetSingleton<EntitiesReferences>();
 
         foreach((
+            RefRW<BuildingBarrack> buildingBarrack,
+            DynamicBuffer<SpawnUnitTypeBuffer> spawnUnitTypeDynamicBuffer,
+            RefRO<BuildingBarrackUnitEnqueue> buildingBarrackUnitEnqueue,
+            EnabledRefRW<BuildingBarrackUnitEnqueue> enabledBuildinBarrackUnitEnqueue) 
+            in SystemAPI.Query<
+                RefRW<BuildingBarrack>, 
+                DynamicBuffer<SpawnUnitTypeBuffer>, 
+                RefRO<BuildingBarrackUnitEnqueue>, 
+                EnabledRefRW<BuildingBarrackUnitEnqueue>>())
+        {
+            spawnUnitTypeDynamicBuffer.Add(new SpawnUnitTypeBuffer
+            {
+                unitType = buildingBarrackUnitEnqueue.ValueRO.unitType
+            });
+            enabledBuildinBarrackUnitEnqueue.ValueRW = false;
+
+            buildingBarrack.ValueRW.onUnitQueueChanged = true;
+        }
+
+        foreach((
             RefRW<BuildingBarrack> buildingBarrack, 
             DynamicBuffer<SpawnUnitTypeBuffer> spawnUnitTypeDynamicBuffer, 
             RefRO<LocalTransform> localTransform) 
@@ -48,6 +68,7 @@ partial struct BuildingBarrackSystem : ISystem
             UnitDataSO unitDataSO = GameAssets.Instance.unitTypeSOList.GetUnitDataSO(unitType);
 
             spawnUnitTypeDynamicBuffer.RemoveAt(0);
+            buildingBarrack.ValueRW.onUnitQueueChanged = true;
 
             Entity spawnedEntity = state.EntityManager.Instantiate(unitDataSO.GetPrefabEntity(entitiesReferences));
             SystemAPI.SetComponent(spawnedEntity, LocalTransform.FromPosition(localTransform.ValueRO.Position));
