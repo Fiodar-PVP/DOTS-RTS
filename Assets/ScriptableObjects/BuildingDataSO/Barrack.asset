@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: Barrack
   m_EditorClassIdentifier: 
   buildingType: 3
+  prefab: {fileID: 5594194948604761311, guid: 86095e86e0ad3421a86662b4fb52b7fa, type: 3}
+  buildingDistanceMin: 10
