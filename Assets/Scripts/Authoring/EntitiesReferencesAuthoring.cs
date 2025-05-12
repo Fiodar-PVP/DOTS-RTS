@@ -9,6 +9,9 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
     [SerializeField] private GameObject soldierPrefab;
     [SerializeField] private GameObject scoutPrefab;
 
+    [SerializeField] private GameObject buildingBarrackPrefab;
+    [SerializeField] private GameObject buildingTowerPrefab;
+
     public class Baker : Baker<EntitiesReferencesAuthoring>
     {
         public override void Bake(EntitiesReferencesAuthoring authoring)
@@ -21,6 +24,9 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
                 shootLightPrefabEntity = GetEntity(authoring.shootLightPrefab, TransformUsageFlags.Dynamic),
                 soldierPrefabEntity = GetEntity(authoring.soldierPrefab, TransformUsageFlags.Dynamic),
                 scoutPrefabEntity = GetEntity(authoring.scoutPrefab, TransformUsageFlags.Dynamic),
+
+                barrackPrefabEntity = GetEntity(authoring.buildingBarrackPrefab, TransformUsageFlags.Dynamic),
+                towerPrefabEntity = GetEntity(authoring.buildingTowerPrefab, TransformUsageFlags.Dynamic),
             });
         }
     }
@@ -33,4 +39,7 @@ public struct EntitiesReferences : IComponentData
     public Entity shootLightPrefabEntity;
     public Entity soldierPrefabEntity;
     public Entity scoutPrefabEntity;
+
+    public Entity barrackPrefabEntity;
+    public Entity towerPrefabEntity;
 }
