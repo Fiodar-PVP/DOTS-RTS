@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: Tower
   m_EditorClassIdentifier: 
   buildingType: 2
+  prefab: {fileID: 2894451519608876921, guid: 3d85defcc607f41888f9a9890d8f0fc3, type: 3}
+  buildingDistanceMin: 10
