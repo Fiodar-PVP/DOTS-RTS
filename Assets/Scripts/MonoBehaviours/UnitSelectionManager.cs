@@ -35,6 +35,11 @@ public class UnitSelectionManager : MonoBehaviour
             return;
         }
 
+        if (!BuildingPlacementManager.Instance.GetActiveBuildingDataSO().IsNone())
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             selectionMouseStartPosition = Input.mousePosition;
@@ -298,4 +303,5 @@ public class UnitSelectionManager : MonoBehaviour
 
         return movePositionArray;
     }
+   
 }
