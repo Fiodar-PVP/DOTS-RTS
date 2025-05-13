@@ -13,3 +13,8 @@ MonoBehaviour:
   m_Name: None
   m_EditorClassIdentifier: 
   buildingType: 0
+  prefab: {fileID: 0}
+  buildingDistanceMin: 0
+  shouldShowInBuildingPlacementManager: 1
+  sprite: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  ghostPrefab: {fileID: 0}

@@ -15,3 +15,6 @@ MonoBehaviour:
   buildingType: 3
   prefab: {fileID: 5594194948604761311, guid: 86095e86e0ad3421a86662b4fb52b7fa, type: 3}
   buildingDistanceMin: 10
+  shouldShowInBuildingPlacementManager: 1
+  sprite: {fileID: 21300000, guid: 52e75afc67cb28d49a06a0a1fc191cb5, type: 3}
+  ghostPrefab: {fileID: 17119538242672499, guid: d5f97a2fd6630b34982aaca8876d69ef, type: 3}
