@@ -1,3 +1,4 @@
+using System;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Physics;
@@ -7,13 +8,40 @@ using UnityEngine.EventSystems;
 
 public class BuildingPlacementManager : MonoBehaviour
 {
+    public event EventHandler OnActiveBuildingDataSOChanged;
+
+    public static BuildingPlacementManager Instance { get; private set; }
+
     [SerializeField] private BuildingDataSO buildingDataSO;
+    [SerializeField] private UnityEngine.Material ghostPrefabMaterial;
+
+    private Transform ghostPrefab;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Update()
     {
+        if(ghostPrefab != null)
+        {
+            ghostPrefab.position = MouseWorldPosition.Instance.GetPosition();
+        }
+
         if (EventSystem.current.IsPointerOverGameObject())
         {
             return;
+        }
+
+        if (buildingDataSO.IsNone())
+        {
+            return;
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            SetActiveBuildingDataSO(GameAssets.Instance.buildingDataListSO.none);
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -78,5 +106,32 @@ public class BuildingPlacementManager : MonoBehaviour
         }
         
         return true;
+    }
+
+    public BuildingDataSO GetActiveBuildingDataSO()
+    {
+        return buildingDataSO;
+    }
+
+    public void SetActiveBuildingDataSO(BuildingDataSO buildingDataSO)
+    {
+        this.buildingDataSO = buildingDataSO;
+
+        if(ghostPrefab != null)
+        {
+            Destroy(ghostPrefab.gameObject);
+        }
+
+        if (!buildingDataSO.IsNone())
+        {
+            ghostPrefab = Instantiate(buildingDataSO.ghostPrefab);
+
+            foreach(MeshRenderer meshRenderer in ghostPrefab.GetComponentsInChildren<MeshRenderer>())
+            {
+                meshRenderer.material = ghostPrefabMaterial;
+            }
+        }
+
+        OnActiveBuildingDataSOChanged?.Invoke(this, EventArgs.Empty);
     }
 }

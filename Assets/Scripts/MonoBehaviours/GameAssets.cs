@@ -8,6 +8,7 @@ public class GameAssets : MonoBehaviour
     public static GameAssets Instance { get; private set; }
 
     public UnitDataListSO unitTypeSOList;
+    public BuildingDataListSO buildingDataListSO;
 
     private void Awake()
     {
