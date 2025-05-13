@@ -6,6 +6,8 @@ public class BuildingDataListSO : ScriptableObject
 {
     public List<BuildingDataSO> buildingDataSOList;
 
+    public BuildingDataSO none;
+
     public BuildingDataSO GetBuildingDataSO(BuildingType buildingType)
     {
         foreach(BuildingDataSO buildingDataSO in buildingDataSOList)
