@@ -6,6 +6,7 @@ using UnityEngine;
 public class DOTSEventManager : MonoBehaviour
 {
     public event EventHandler OnBuildingBarrackUnitQueueChanged;
+    public event EventHandler OnBuildingHQDead;
     public static DOTSEventManager Instance { get; private set; }
 
     private void Awake()
@@ -19,5 +20,10 @@ public class DOTSEventManager : MonoBehaviour
         {
             OnBuildingBarrackUnitQueueChanged.Invoke(entity, EventArgs.Empty);
         }
+    }
+
+    public void TriggerOnBuildingHQDead()
+    {
+        OnBuildingHQDead?.Invoke(this, EventArgs.Empty);
     }
 }
