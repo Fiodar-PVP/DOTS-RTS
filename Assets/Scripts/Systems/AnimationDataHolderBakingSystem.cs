@@ -61,9 +61,17 @@ partial struct AnimationDataHolderBakingSystem : ISystem
             }
             
             animationDataHolder.ValueRW.animationDataBlobArrayBlobAssetReference = 
-                blobBuilder.CreateBlobAssetReference<BlobArray<AnimationData>>(Allocator.Persistent);
+                blobBuilder.CreateBlobAssetReference<BlobArray<AnimationData>>(Allocator.Domain);
 
             blobBuilder.Dispose();
+        }
+    }
+
+    public void OnDestroy(ref SystemState state)
+    {
+        foreach(RefRW<AnimationDataHolder> animationDataHolder in SystemAPI.Query<RefRW<AnimationDataHolder>>())
+        {
+            animationDataHolder.ValueRW.animationDataBlobArrayBlobAssetReference.Dispose();
         }
     }
 }
