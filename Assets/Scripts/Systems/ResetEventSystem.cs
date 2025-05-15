@@ -7,11 +7,13 @@ using Unity.Jobs;
 partial struct ResetEventSystem : ISystem
 {
     private NativeArray<JobHandle> jobHandleNativeArray;
-    
+    private NativeList<Entity> onBuildingBarrackUnitEnqueueChangedEntityList;
+
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        jobHandleNativeArray = new NativeArray<JobHandle>(4, Allocator.Persistent);
+        jobHandleNativeArray = new NativeArray<JobHandle>(4, Allocator.Domain);
+        onBuildingBarrackUnitEnqueueChangedEntityList = new NativeList<Entity>(Allocator.Domain);
     }
 
     public void OnUpdate(ref SystemState state)
@@ -32,7 +34,7 @@ partial struct ResetEventSystem : ISystem
         jobHandleNativeArray[2] = new ResetShootAttackEventJob().ScheduleParallel(state.Dependency);
         jobHandleNativeArray[3] = new ResetMeleeAttackEventJob().ScheduleParallel(state.Dependency);
 
-        NativeList<Entity> onBuildingBarrackUnitEnqueueChangedEntityList = new NativeList<Entity>(Allocator.TempJob);
+        onBuildingBarrackUnitEnqueueChangedEntityList.Clear();
         new ResetBuildingBarrackEventJob
         {
             onUnitQueueChangedEntityList = onBuildingBarrackUnitEnqueueChangedEntityList.AsParallelWriter()
@@ -41,6 +43,12 @@ partial struct ResetEventSystem : ISystem
         DOTSEventManager.Instance.TriggerOnBuildinBarrackUnitQueueChanged(onBuildingBarrackUnitEnqueueChangedEntityList);
 
         state.Dependency = JobHandle.CombineDependencies(jobHandleNativeArray);
+    }
+
+    public void OnDestroy(ref SystemState state)
+    {
+        jobHandleNativeArray.Dispose();
+        onBuildingBarrackUnitEnqueueChangedEntityList.Dispose();
     }
 }
 
