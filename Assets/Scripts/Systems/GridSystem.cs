@@ -3,9 +3,10 @@
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
-partial struct GridSystem : ISystem
+public partial struct GridSystem : ISystem
 {
     public struct GridSystemData : IComponentData
     {
@@ -82,13 +83,24 @@ partial struct GridSystem : ISystem
     {
         GridSystemData gridSystemData = state.EntityManager.GetComponentData<GridSystemData>(state.SystemHandle);
 
-        if (Input.GetKey(KeyCode.T))
+        if (Input.GetMouseButtonDown(0))
         {
-            int index = CalculateIndex(3, 2, gridSystemData.width);
-            Entity gridNodeEntity = gridSystemData.gridMap.gridEntityArray[index];
-            RefRW<GridNode> gridNode = SystemAPI.GetComponentRW<GridNode>(gridNodeEntity);
-            gridNode.ValueRW.data = 1;
+            Vector3 mouseWorldPosition = MouseWorldPosition.Instance.GetPosition();
+            int2 gridPosition = GetGridPosition(mouseWorldPosition, gridSystemData.gridNodeSize);
+
+            if(IsValidGridPosition(gridPosition, gridSystemData.width, gridSystemData.height))
+            {
+                int index = CalculateIndex(gridPosition.x, gridPosition.y, gridSystemData.width);
+                Entity gridNodeEntity = gridSystemData.gridMap.gridEntityArray[index];
+                RefRW<GridNode> gridNode = SystemAPI.GetComponentRW<GridNode>(gridNodeEntity);
+                gridNode.ValueRW.data = 1;
+            }
         }
+
+#if(GridDebug)
+        GridSystemDebug.Instance?.InitializeGrid(gridSystemData);
+        GridSystemDebug.Instance?.UpdateGrid(gridSystemData);
+#endif
     }
 
     [BurstCompile]
@@ -101,5 +113,28 @@ partial struct GridSystem : ISystem
     public static int CalculateIndex(int x, int y, int width)
     {
         return x + y * width;
+    }
+
+    public static float3 GetWorldPosition(int x, int y, float gridNodeSize)
+    {
+        return new float3(x * gridNodeSize, 0f, y * gridNodeSize);
+    }
+
+    public static int2 GetGridPosition(Vector3 position, float gridNodeSize)
+    {
+        return new int2
+        {
+            x = (int)Mathf.Floor(position.x / gridNodeSize),
+            y = (int)Mathf.Floor(position.z / gridNodeSize)
+        };
+    }
+
+    public static bool IsValidGridPosition(int2 gridPosition, int width, int height)
+    {
+        return
+            gridPosition.x >= 0 &&
+            gridPosition.y >= 0 &&
+            gridPosition.x < width &&
+            gridPosition.y < height;
     }
 }
