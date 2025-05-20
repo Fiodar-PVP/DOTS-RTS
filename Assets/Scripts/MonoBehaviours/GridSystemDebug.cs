@@ -50,7 +50,7 @@ public class GridSystemDebug : MonoBehaviour
                 int index = GridSystem.CalculateIndex(x, y, gridSystemData.width);
                 Entity entity = gridSystemData.gridMap.gridEntityArray[index];
                 GridSystem.GridNode gridNode = entityManager.GetComponentData<GridSystem.GridNode>(entity);
-                gridSystemDebugSingleArray[x, y].SetColor(gridNode.data == 0 ? Color.white : Color.blue);
+                //gridSystemDebugSingleArray[x, y].SetColor(gridNode.data == 0 ? Color.white : Color.blue);
             }
         }
     }
