@@ -31,6 +31,8 @@ public partial struct GridSystem : ISystem
         public float2 vector;
     }
 
+    private int2 targetGridNodePosition;
+
 #if(!GridDebug)
     [BurstCompile]
 #endif
@@ -88,7 +90,6 @@ public partial struct GridSystem : ISystem
         GridSystemData gridSystemData = state.EntityManager.GetComponentData<GridSystemData>(state.SystemHandle);
 
         NativeArray<RefRW<GridNode>> gridNodeArray = new NativeArray<RefRW<GridNode>>(gridSystemData.width * gridSystemData.height, Allocator.Temp);
-        int2 targetGridNodePosition = new int2(1,2);
 
         for (int x = 0; x < gridSystemData.width; x++)
         {
@@ -124,7 +125,7 @@ public partial struct GridSystem : ISystem
             safetyCheck--;
             if(safetyCheck < 0)
             {
-                Debug.LogError("Too many iterations in Flow Field algorithm!");
+                Debug.LogError("Safety Break! Too many iterations in Flow Field algorithm!");
                 break;
             }
 
@@ -155,14 +156,14 @@ public partial struct GridSystem : ISystem
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 mouseWorldPosition = MouseWorldPosition.Instance.GetPosition();
-            int2 gridPosition = GetGridPosition(mouseWorldPosition, gridSystemData.gridNodeSize);
+            int2 mouseGridPosition = GetGridPosition(mouseWorldPosition, gridSystemData.gridNodeSize);
 
-            if(IsValidGridPosition(gridPosition, gridSystemData.width, gridSystemData.height))
+            if(IsValidGridPosition(mouseGridPosition, gridSystemData.width, gridSystemData.height))
             {
-                int index = CalculateIndex(gridPosition.x, gridPosition.y, gridSystemData.width);
+                int index = CalculateIndex(mouseGridPosition.x, mouseGridPosition.y, gridSystemData.width);
                 Entity gridNodeEntity = gridSystemData.gridMap.gridEntityArray[index];
                 RefRW<GridNode> gridNode = SystemAPI.GetComponentRW<GridNode>(gridNodeEntity);
-                Debug.Log(gridNode.ValueRO.vector);
+                targetGridNodePosition = mouseGridPosition;
             }
         }
 
