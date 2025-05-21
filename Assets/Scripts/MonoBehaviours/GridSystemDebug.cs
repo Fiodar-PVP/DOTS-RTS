@@ -6,6 +6,8 @@ public class GridSystemDebug : MonoBehaviour
     public static GridSystemDebug Instance { get; private set; }
 
     [SerializeField] private Transform debugPrefab;
+    [SerializeField] private Sprite circleSprite;
+    [SerializeField] private Sprite arrowSprite;
 
     private GridSystemDebugSingle[,] gridSystemDebugSingleArray;
     private bool isInit;
@@ -47,10 +49,23 @@ public class GridSystemDebug : MonoBehaviour
         {
             for(int y = 0; y < gridSystemData.height; y++)
             {
+                GridSystemDebugSingle gridSystemDebugSingle = gridSystemDebugSingleArray[x, y];
+
                 int index = GridSystem.CalculateIndex(x, y, gridSystemData.width);
                 Entity entity = gridSystemData.gridMap.gridEntityArray[index];
                 GridSystem.GridNode gridNode = entityManager.GetComponentData<GridSystem.GridNode>(entity);
-                //gridSystemDebugSingleArray[x, y].SetColor(gridNode.data == 0 ? Color.white : Color.blue);
+                if(gridNode.cost == 0)
+                {
+                    //This is the target Node
+                    gridSystemDebugSingle.SetSprite(circleSprite);
+                    gridSystemDebugSingle.SetColor(Color.green);
+                }
+                else
+                {
+                    gridSystemDebugSingle.SetSprite(arrowSprite);
+                    gridSystemDebugSingle.SetColor(Color.white);
+                    gridSystemDebugSingle.SetSpriteRotation(gridNode.vector);
+                }
             }
         }
     }

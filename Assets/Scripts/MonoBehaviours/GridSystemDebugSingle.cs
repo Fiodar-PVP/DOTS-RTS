@@ -13,4 +13,15 @@ public class GridSystemDebugSingle : MonoBehaviour
     {
         spriteRenderer.color = color;
     }
+
+    public void SetSprite(Sprite sprite)
+    {
+        spriteRenderer.sprite = sprite;
+    }
+
+    public void SetSpriteRotation(Vector2 direction)
+    {
+        spriteRenderer.transform.rotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.y), Vector3.up);
+        spriteRenderer.transform.rotation *= Quaternion.Euler(90, 0, 90);
+    }
 }
