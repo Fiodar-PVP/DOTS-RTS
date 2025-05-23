@@ -62,9 +62,17 @@ public class GridSystemDebug : MonoBehaviour
                 }
                 else
                 {
-                    gridSystemDebugSingle.SetSprite(arrowSprite);
-                    gridSystemDebugSingle.SetColor(Color.white);
-                    gridSystemDebugSingle.SetSpriteRotation(gridNode.vector);
+                    if(gridNode.cost == GridSystem.WALL_COST)
+                    {
+                        gridSystemDebugSingle.SetSprite(circleSprite);
+                        gridSystemDebugSingle.SetColor(Color.black);
+                    }
+                    else
+                    {
+                        gridSystemDebugSingle.SetSprite(arrowSprite);
+                        gridSystemDebugSingle.SetColor(Color.white);
+                        gridSystemDebugSingle.SetSpriteRotation(gridNode.vector);
+                    }
                 }
             }
         }
