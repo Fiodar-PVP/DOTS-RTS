@@ -126,26 +126,25 @@ public partial struct GridSystem : ISystem
             GroupIndex = 0,
         };
 
+        NativeList<DistanceHit> distanceHitList = new NativeList<DistanceHit>(Allocator.Temp);
+
         for(int x = 0; x < gridSystemData.width; x++)
         {
             for(int y = 0; y < gridSystemData.height; y++)
             {
-                NativeList<DistanceHit> distanceHitList = new NativeList<DistanceHit>(Allocator.Temp);
                 if(collisionWorld.OverlapSphere(
-                    GetCenterWorldPosition(x, y, gridSystemData.gridNodeSize),
+                    GetWorldCenterPosition(x, y, gridSystemData.gridNodeSize),
                     gridSystemData.gridNodeSize * 0.5f,
                     ref distanceHitList,
                     collisionFilter))
                 {
                     //There is a wall on the current grid node
                     int index = CalculateIndex(x, y, gridSystemData.width);
-                    RefRW<GridNode> gridNode = gridNodeArray[index];
-                    gridNode.ValueRW.cost = WALL_COST;
+                    gridNodeArray[index].ValueRW.cost = WALL_COST;
                 }
-
-                distanceHitList.Dispose();
             }
         }
+        distanceHitList.Dispose();
 
         NativeQueue<RefRW<GridNode>> gridNodeOpenQueue = new NativeQueue<RefRW<GridNode>>(Allocator.Temp);
         int targetGridNodeIndex = CalculateIndex(targetGridNodePosition, gridSystemData.width);
@@ -286,7 +285,7 @@ public partial struct GridSystem : ISystem
         return x + y * width;
     }
 
-    public static float3 GetCenterWorldPosition(int x, int y, float gridNodeSize)
+    public static float3 GetWorldCenterPosition(int x, int y, float gridNodeSize)
     {
         return new float3(x * gridNodeSize + gridNodeSize * 0.5f, 0f, y * gridNodeSize + gridNodeSize * 0.5f);
     }
