@@ -129,7 +129,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -16.71
+      value: 17.240002
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -137,7 +137,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.33
+      value: -0.19999981
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -171,6 +171,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SoldierUnit
       objectReference: {fileID: 0}
+    - target: {fileID: 4512729984109025488, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -186,7 +190,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3120400457597897473, guid: a7550329313f46c41ba1c66e1069fffb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -21.51
+      value: 12.440001
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: a7550329313f46c41ba1c66e1069fffb, type: 3}
       propertyPath: m_LocalPosition.y
@@ -194,7 +198,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: a7550329313f46c41ba1c66e1069fffb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.24
+      value: 6.8900003
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: a7550329313f46c41ba1c66e1069fffb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -243,7 +247,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.35
+      value: 23.6
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -251,7 +255,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.18
+      value: 0.9500003
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -284,6 +288,10 @@ PrefabInstance:
     - target: {fileID: 4512729984109025488, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_Name
       value: SoldierUnit
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512729984109025488, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -300,7 +308,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -18.580002
+      value: 15.369999
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -308,7 +316,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.7799997
+      value: 2.3500004
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -341,6 +349,10 @@ PrefabInstance:
     - target: {fileID: 4512729984109025488, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_Name
       value: SoldierUnit
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512729984109025488, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -517,7 +529,7 @@ Transform:
   m_GameObject: {fileID: 502299388}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 35.9262, y: -0, z: 4.7289}
+  m_LocalPosition: {x: 35.4, y: 0, z: 9.4}
   m_LocalScale: {x: 14.8524, y: 1, z: 6.0578}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -533,7 +545,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -12.26
+      value: 21.69
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -541,7 +553,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.6499996
+      value: -0.5199995
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -574,6 +586,10 @@ PrefabInstance:
     - target: {fileID: 4512729984109025488, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_Name
       value: SoldierUnit
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512729984109025488, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -610,7 +626,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -17.21
+      value: 16.740002
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -618,7 +634,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.5499997
+      value: 5.5800004
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -652,6 +668,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SoldierUnit
       objectReference: {fileID: 0}
+    - target: {fileID: 4512729984109025488, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -667,7 +687,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5667245185364054733, guid: 3df5fb98c0c2a2b4f97a46f989193ba2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 17.09
+      value: 42.019997
       objectReference: {fileID: 0}
     - target: {fileID: 5667245185364054733, guid: 3df5fb98c0c2a2b4f97a46f989193ba2, type: 3}
       propertyPath: m_LocalPosition.y
@@ -711,7 +731,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6578504330665427228, guid: 3df5fb98c0c2a2b4f97a46f989193ba2, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -823,7 +843,7 @@ Transform:
   m_GameObject: {fileID: 1548381333}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12.9033, y: 0, z: 30.0924}
+  m_LocalPosition: {x: 37.833298, y: 0, z: 30.0924}
   m_LocalScale: {x: 12.932401, y: 1, z: 9.51796}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -839,7 +859,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -14.55
+      value: 19.4
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -847,7 +867,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.83
+      value: 3.3
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -880,6 +900,10 @@ PrefabInstance:
     - target: {fileID: 4512729984109025488, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_Name
       value: SoldierUnit
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512729984109025488, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1034,7 +1058,7 @@ Transform:
   m_GameObject: {fileID: 1757516202}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 37.59, y: 0, z: 23.76}
+  m_LocalPosition: {x: 62.519997, y: 0, z: 23.76}
   m_LocalScale: {x: 9.9258585, y: 1, z: 14.932476}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1114,7 +1138,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -11.66
+      value: 22.29
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1122,7 +1146,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.4499998
+      value: 4.6800003
       objectReference: {fileID: 0}
     - target: {fileID: 3120400457597897473, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1156,6 +1180,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SoldierUnit
       objectReference: {fileID: 0}
+    - target: {fileID: 4512729984109025488, guid: 49827f455eb649544aa19aed73bb40a6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1173,9 +1201,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: BuildingZombieSpawner
       objectReference: {fileID: 0}
+    - target: {fileID: 6973198213142648514, guid: c5ad231deb5ac4a39b75017d5cd7e7aa, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8528561049181147785, guid: c5ad231deb5ac4a39b75017d5cd7e7aa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 19.83
+      value: 56.1
       objectReference: {fileID: 0}
     - target: {fileID: 8528561049181147785, guid: c5ad231deb5ac4a39b75017d5cd7e7aa, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1183,7 +1215,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8528561049181147785, guid: c5ad231deb5ac4a39b75017d5cd7e7aa, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 14.29
+      value: 8.8
       objectReference: {fileID: 0}
     - target: {fileID: 8528561049181147785, guid: c5ad231deb5ac4a39b75017d5cd7e7aa, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1228,7 +1260,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 291838321762333292, guid: 8edd41d5371ef5746bad6a9af0df189a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -22.51
+      value: 11.440001
       objectReference: {fileID: 0}
     - target: {fileID: 291838321762333292, guid: 8edd41d5371ef5746bad6a9af0df189a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1236,7 +1268,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 291838321762333292, guid: 8edd41d5371ef5746bad6a9af0df189a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 16.01
+      value: 23.14
       objectReference: {fileID: 0}
     - target: {fileID: 291838321762333292, guid: 8edd41d5371ef5746bad6a9af0df189a, type: 3}
       propertyPath: m_LocalRotation.w

@@ -202,6 +202,17 @@ public partial struct GridSystem : ISystem
                 RefRW<GridNode> gridNode = SystemAPI.GetComponentRW<GridNode>(gridNodeEntity);
                 targetGridNodePosition = mouseGridPosition;
             }
+
+            foreach((
+                RefRW<FlowFieldFollower> flowFieldFollower, 
+                EnabledRefRW<FlowFieldFollower> flowFieldFollowerEnabled) 
+                in SystemAPI.Query<
+                    RefRW<FlowFieldFollower>, 
+                    EnabledRefRW<FlowFieldFollower>>().WithPresent<FlowFieldFollower>())
+            {
+                flowFieldFollower.ValueRW.targetPosition = mouseWorldPosition;
+                flowFieldFollowerEnabled.ValueRW = true;
+            }
         }
 
 #if(GridDebug)
@@ -302,6 +313,11 @@ public partial struct GridSystem : ISystem
             x = (int)Mathf.Floor(position.x / gridNodeSize),
             y = (int)Mathf.Floor(position.z / gridNodeSize)
         };
+    }
+
+    public static float3 GetMovementVector(float2 vector)
+    {
+        return new float3(vector.x, 0f, vector.y);
     }
 
     public static bool IsValidGridPosition(int2 gridPosition, int width, int height)
