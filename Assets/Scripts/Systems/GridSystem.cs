@@ -34,8 +34,6 @@ public partial struct GridSystem : ISystem
         public float2 vector;
     }
 
-    private int2 targetGridNodePosition;
-
 #if(!GridDebug)
     [BurstCompile]
 #endif
@@ -92,104 +90,122 @@ public partial struct GridSystem : ISystem
     {
         GridSystemData gridSystemData = state.EntityManager.GetComponentData<GridSystemData>(state.SystemHandle);
 
-        NativeArray<RefRW<GridNode>> gridNodeArray = new NativeArray<RefRW<GridNode>>(gridSystemData.width * gridSystemData.height, Allocator.Temp);
-
-        for (int x = 0; x < gridSystemData.width; x++)
+        foreach ((
+            RefRO<FlowFieldPathRequest> flowFieldPathRequest,
+            EnabledRefRW<FlowFieldPathRequest> flowFieldPathRequestEnabled, 
+            RefRW<FlowFieldFollower> flowFieldFollower,
+            EnabledRefRW<FlowFieldFollower> flowFieldFollowerEnabled)
+            in SystemAPI.Query<
+                RefRO<FlowFieldPathRequest>,
+                EnabledRefRW<FlowFieldPathRequest>,
+                RefRW<FlowFieldFollower>,
+                EnabledRefRW<FlowFieldFollower>>().WithPresent<FlowFieldFollower>() )
         {
-            for(int y = 0; y< gridSystemData.height; y++)
+            int2 targetGridNodePosition = GetGridPosition(flowFieldPathRequest.ValueRO.targetPosition, gridSystemData.gridNodeSize);
+            flowFieldPathRequestEnabled.ValueRW = false;
+
+            flowFieldFollower.ValueRW.targetPosition = flowFieldPathRequest.ValueRO.targetPosition;
+            flowFieldFollowerEnabled.ValueRW = true;
+
+            NativeArray<RefRW<GridNode>> gridNodeArray = new NativeArray<RefRW<GridNode>>(gridSystemData.width * gridSystemData.height, Allocator.Temp);
+
+            for (int x = 0; x < gridSystemData.width; x++)
             {
-                int index = CalculateIndex(x, y, gridSystemData.width);
-                Entity gridNodeEntity = gridSystemData.gridMap.gridEntityArray[index];
-                RefRW<GridNode> gridNode = SystemAPI.GetComponentRW<GridNode>(gridNodeEntity);
-                gridNodeArray[index] = gridNode;
-
-                gridNode.ValueRW.vector = new float2(0, 1);
-                if(gridNode.ValueRW.x == targetGridNodePosition.x && gridNode.ValueRW.y == targetGridNodePosition.y)
+                for(int y = 0; y< gridSystemData.height; y++)
                 {
-                    gridNode.ValueRW.cost = 0;
-                    gridNode.ValueRW.bestCost = 0;
-                }
-                else
-                {
-                    gridNode.ValueRW.cost = 1;
-                    gridNode.ValueRW.bestCost = byte.MaxValue;
-                }
-            }
-        }
-
-        PhysicsWorldSingleton physicsWorldSingleton = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
-        CollisionWorld collisionWorld = physicsWorldSingleton.CollisionWorld;
-        CollisionFilter collisionFilter = new CollisionFilter
-        {
-            BelongsTo = ~0u,
-            CollidesWith = 1 << GameAssets.PATHFINDING_WALL_LAYER,
-            GroupIndex = 0,
-        };
-
-        NativeList<DistanceHit> distanceHitList = new NativeList<DistanceHit>(Allocator.Temp);
-
-        for(int x = 0; x < gridSystemData.width; x++)
-        {
-            for(int y = 0; y < gridSystemData.height; y++)
-            {
-                if(collisionWorld.OverlapSphere(
-                    GetWorldCenterPosition(x, y, gridSystemData.gridNodeSize),
-                    gridSystemData.gridNodeSize * 0.5f,
-                    ref distanceHitList,
-                    collisionFilter))
-                {
-                    //There is a wall on the current grid node
                     int index = CalculateIndex(x, y, gridSystemData.width);
-                    gridNodeArray[index].ValueRW.cost = WALL_COST;
+                    Entity gridNodeEntity = gridSystemData.gridMap.gridEntityArray[index];
+                    RefRW<GridNode> gridNode = SystemAPI.GetComponentRW<GridNode>(gridNodeEntity);
+                    gridNodeArray[index] = gridNode;
+
+                    gridNode.ValueRW.vector = new float2(0, 1);
+                    if(gridNode.ValueRW.x == targetGridNodePosition.x && gridNode.ValueRW.y == targetGridNodePosition.y)
+                    {
+                        gridNode.ValueRW.cost = 0;
+                        gridNode.ValueRW.bestCost = 0;
+                    }
+                    else
+                    {
+                        gridNode.ValueRW.cost = 1;
+                        gridNode.ValueRW.bestCost = byte.MaxValue;
+                    }
                 }
             }
-        }
-        distanceHitList.Dispose();
 
-        NativeQueue<RefRW<GridNode>> gridNodeOpenQueue = new NativeQueue<RefRW<GridNode>>(Allocator.Temp);
-        int targetGridNodeIndex = CalculateIndex(targetGridNodePosition, gridSystemData.width);
-        RefRW <GridNode> targetGridNode = gridNodeArray[targetGridNodeIndex];
-        gridNodeOpenQueue.Enqueue(targetGridNode);
-
-        int safetyCheck = 1000;
-        while(gridNodeOpenQueue.Count > 0)
-        {
-            safetyCheck--;
-            if(safetyCheck < 0)
+            PhysicsWorldSingleton physicsWorldSingleton = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
+            CollisionWorld collisionWorld = physicsWorldSingleton.CollisionWorld;
+            CollisionFilter collisionFilter = new CollisionFilter
             {
-                Debug.LogError("Safety Break! Too many iterations in Flow Field algorithm!");
-                break;
-            }
+                BelongsTo = ~0u,
+                CollidesWith = 1 << GameAssets.PATHFINDING_WALL_LAYER,
+                GroupIndex = 0,
+            };
 
-            RefRW<GridNode> currentGridNode = gridNodeOpenQueue.Dequeue();
+            NativeList<DistanceHit> distanceHitList = new NativeList<DistanceHit>(Allocator.Temp);
 
-            NativeList<RefRW<GridNode>> neighbourGridNodeList = GetNeighbourGridNodeList(currentGridNode, gridSystemData.width, gridSystemData.height, gridNodeArray);
-
-            foreach(RefRW<GridNode> neighbourGridNode in neighbourGridNodeList)
+            for(int x = 0; x < gridSystemData.width; x++)
             {
-                if(neighbourGridNode.ValueRO.cost == WALL_COST)
+                for(int y = 0; y < gridSystemData.height; y++)
                 {
-                    continue;
-                }
-
-                byte newBestCost = (byte)(currentGridNode.ValueRO.bestCost + neighbourGridNode.ValueRO.cost);
-                if (newBestCost < neighbourGridNode.ValueRO.bestCost)
-                {
-                    neighbourGridNode.ValueRW.bestCost = newBestCost;
-                    neighbourGridNode.ValueRW.vector = CalculateVector(
-                        neighbourGridNode.ValueRO.x, neighbourGridNode.ValueRO.y,
-                        currentGridNode.ValueRO.x, currentGridNode.ValueRO.y);
-
-                    gridNodeOpenQueue.Enqueue(neighbourGridNode);
+                    if(collisionWorld.OverlapSphere(
+                        GetWorldCenterPosition(x, y, gridSystemData.gridNodeSize),
+                        gridSystemData.gridNodeSize * 0.5f,
+                        ref distanceHitList,
+                        collisionFilter))
+                    {
+                        //There is a wall on the current grid node
+                        int index = CalculateIndex(x, y, gridSystemData.width);
+                        gridNodeArray[index].ValueRW.cost = WALL_COST;
+                    }
                 }
             }
+            distanceHitList.Dispose();
 
-            neighbourGridNodeList.Dispose();
+            NativeQueue<RefRW<GridNode>> gridNodeOpenQueue = new NativeQueue<RefRW<GridNode>>(Allocator.Temp);
+            int targetGridNodeIndex = CalculateIndex(targetGridNodePosition, gridSystemData.width);
+            RefRW <GridNode> targetGridNode = gridNodeArray[targetGridNodeIndex];
+            gridNodeOpenQueue.Enqueue(targetGridNode);
+
+            int safetyCheck = 1000;
+            while(gridNodeOpenQueue.Count > 0)
+            {
+                safetyCheck--;
+                if(safetyCheck < 0)
+                {
+                    Debug.LogError("Safety Break! Too many iterations in Flow Field algorithm!");
+                    break;
+                }
+
+                RefRW<GridNode> currentGridNode = gridNodeOpenQueue.Dequeue();
+
+                NativeList<RefRW<GridNode>> neighbourGridNodeList = GetNeighbourGridNodeList(currentGridNode, gridSystemData.width, gridSystemData.height, gridNodeArray);
+
+                foreach(RefRW<GridNode> neighbourGridNode in neighbourGridNodeList)
+                {
+                    if(neighbourGridNode.ValueRO.cost == WALL_COST)
+                    {
+                        continue;
+                    }
+
+                    byte newBestCost = (byte)(currentGridNode.ValueRO.bestCost + neighbourGridNode.ValueRO.cost);
+                    if (newBestCost < neighbourGridNode.ValueRO.bestCost)
+                    {
+                        neighbourGridNode.ValueRW.bestCost = newBestCost;
+                        neighbourGridNode.ValueRW.vector = CalculateVector(
+                            neighbourGridNode.ValueRO.x, neighbourGridNode.ValueRO.y,
+                            currentGridNode.ValueRO.x, currentGridNode.ValueRO.y);
+
+                        gridNodeOpenQueue.Enqueue(neighbourGridNode);
+                    }
+                }
+
+                neighbourGridNodeList.Dispose();
+            }
+
+            gridNodeOpenQueue.Dispose();
+            gridNodeArray.Dispose();
         }
 
-        gridNodeOpenQueue.Dispose();
-        gridNodeArray.Dispose();
-        
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 mouseWorldPosition = MouseWorldPosition.Instance.GetPosition();
@@ -200,19 +216,9 @@ public partial struct GridSystem : ISystem
                 int index = CalculateIndex(mouseGridPosition.x, mouseGridPosition.y, gridSystemData.width);
                 Entity gridNodeEntity = gridSystemData.gridMap.gridEntityArray[index];
                 RefRW<GridNode> gridNode = SystemAPI.GetComponentRW<GridNode>(gridNodeEntity);
-                targetGridNodePosition = mouseGridPosition;
             }
 
-            foreach((
-                RefRW<FlowFieldFollower> flowFieldFollower, 
-                EnabledRefRW<FlowFieldFollower> flowFieldFollowerEnabled) 
-                in SystemAPI.Query<
-                    RefRW<FlowFieldFollower>, 
-                    EnabledRefRW<FlowFieldFollower>>().WithPresent<FlowFieldFollower>())
-            {
-                flowFieldFollower.ValueRW.targetPosition = mouseWorldPosition;
-                flowFieldFollowerEnabled.ValueRW = true;
-            }
+
         }
 
 #if(GridDebug)
