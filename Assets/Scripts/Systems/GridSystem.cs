@@ -10,13 +10,15 @@ using UnityEngine;
 public partial struct GridSystem : ISystem
 {
     public const byte WALL_COST = byte.MaxValue;
+    public const int FLOW_FIELD_MAP_COUNT = 50;
 
     public struct GridSystemData : IComponentData
     {
         public int width;
         public int height;
-        public GridMap gridMap;
+        public NativeArray<GridMap> gridMapArray;
         public float gridNodeSize;
+        public int nextGridMapArrayIndex;
     }
 
     public struct GridMap
@@ -45,40 +47,47 @@ public partial struct GridSystem : ISystem
         float gridNodeSize = 5f;
 
         int totalCount = width * height;
-        
-        GridMap gridMap = new GridMap();
-        gridMap.gridEntityArray = new NativeArray<Entity>(totalCount, Allocator.Persistent);
 
-        Entity gridNodeEntityPrefab = state.EntityManager.CreateEntity();
-        state.EntityManager.AddComponent<GridNode>(gridNodeEntityPrefab);
+        NativeArray<GridMap> gridMapArray = new NativeArray<GridMap>(FLOW_FIELD_MAP_COUNT, Allocator.Persistent);
 
-        state.EntityManager.Instantiate(gridNodeEntityPrefab, gridMap.gridEntityArray);
-
-        for(int x = 0; x < width; x++)
+        for(int i = 0; i < FLOW_FIELD_MAP_COUNT; i++)
         {
-            for(int y = 0; y < height; y++)
+            GridMap gridMap = new GridMap();
+            gridMap.gridEntityArray = new NativeArray<Entity>(totalCount, Allocator.Persistent);
+
+            Entity gridNodeEntityPrefab = state.EntityManager.CreateEntity();
+            state.EntityManager.AddComponent<GridNode>(gridNodeEntityPrefab);
+
+            state.EntityManager.Instantiate(gridNodeEntityPrefab, gridMap.gridEntityArray);
+
+            for(int x = 0; x < width; x++)
             {
-                int index = CalculateIndex(x, y, width);
-                GridNode gridNode = new GridNode
+                for(int y = 0; y < height; y++)
                 {
-                    index = index,
-                    x = x,
-                    y = y,
-                };
+                    int index = CalculateIndex(x, y, width);
+                    GridNode gridNode = new GridNode
+                    {
+                        index = index,
+                        x = x,
+                        y = y,
+                    };
 
-                SystemAPI.SetComponent(gridMap.gridEntityArray[index], gridNode);
+                    SystemAPI.SetComponent(gridMap.gridEntityArray[index], gridNode);
 #if(GridDebug)
-                state.EntityManager.SetName(gridMap.gridEntityArray[index], "GridNode_" + x + "_" + y);
+                    state.EntityManager.SetName(gridMap.gridEntityArray[index], "GridNode_" + x + "_" + y);
 #endif
+                }
             }
-        }
 
+            gridMapArray[i] = gridMap;
+        }
+        
         state.EntityManager.AddComponent<GridSystemData>(state.SystemHandle);
         state.EntityManager.SetComponentData(state.SystemHandle, new GridSystemData
         {
             width = width,
             height = height,
-            gridMap = gridMap,
+            gridMapArray = gridMapArray,
             gridNodeSize = gridNodeSize,
         });
     }
@@ -104,6 +113,13 @@ public partial struct GridSystem : ISystem
             int2 targetGridNodePosition = GetGridPosition(flowFieldPathRequest.ValueRO.targetPosition, gridSystemData.gridNodeSize);
             flowFieldPathRequestEnabled.ValueRW = false;
 
+            int gridIndex = gridSystemData.nextGridMapArrayIndex;
+            gridSystemData.nextGridMapArrayIndex = (gridSystemData.nextGridMapArrayIndex + 1) % FLOW_FIELD_MAP_COUNT;
+            SystemAPI.SetComponent(state.SystemHandle, gridSystemData);
+
+            Debug.Log("Calculating target position: " + targetGridNodePosition + " :: " + gridIndex);
+
+            flowFieldFollower.ValueRW.gridIndex = gridIndex;
             flowFieldFollower.ValueRW.targetPosition = flowFieldPathRequest.ValueRO.targetPosition;
             flowFieldFollowerEnabled.ValueRW = true;
 
@@ -111,10 +127,10 @@ public partial struct GridSystem : ISystem
 
             for (int x = 0; x < gridSystemData.width; x++)
             {
-                for(int y = 0; y< gridSystemData.height; y++)
+                for(int y = 0; y < gridSystemData.height; y++)
                 {
                     int index = CalculateIndex(x, y, gridSystemData.width);
-                    Entity gridNodeEntity = gridSystemData.gridMap.gridEntityArray[index];
+                    Entity gridNodeEntity = gridSystemData.gridMapArray[gridIndex].gridEntityArray[index];
                     RefRW<GridNode> gridNode = SystemAPI.GetComponentRW<GridNode>(gridNodeEntity);
                     gridNodeArray[index] = gridNode;
 
@@ -206,21 +222,6 @@ public partial struct GridSystem : ISystem
             gridNodeArray.Dispose();
         }
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector3 mouseWorldPosition = MouseWorldPosition.Instance.GetPosition();
-            int2 mouseGridPosition = GetGridPosition(mouseWorldPosition, gridSystemData.gridNodeSize);
-
-            if(IsValidGridPosition(mouseGridPosition, gridSystemData.width, gridSystemData.height))
-            {
-                int index = CalculateIndex(mouseGridPosition.x, mouseGridPosition.y, gridSystemData.width);
-                Entity gridNodeEntity = gridSystemData.gridMap.gridEntityArray[index];
-                RefRW<GridNode> gridNode = SystemAPI.GetComponentRW<GridNode>(gridNodeEntity);
-            }
-
-
-        }
-
 #if(GridDebug)
         GridSystemDebug.Instance?.InitializeGrid(gridSystemData);
         GridSystemDebug.Instance?.UpdateGrid(gridSystemData);
@@ -231,7 +232,12 @@ public partial struct GridSystem : ISystem
     public void OnDestroy(ref SystemState state)
     {
         RefRW<GridSystemData> gridSystemData = state.EntityManager.GetComponentDataRW<GridSystemData>(state.SystemHandle);
-        gridSystemData.ValueRW.gridMap.gridEntityArray.Dispose();
+        for(int i = 0; i < FLOW_FIELD_MAP_COUNT; i++)
+        {
+            gridSystemData.ValueRW.gridMapArray[i].gridEntityArray.Dispose();
+        }
+
+        gridSystemData.ValueRW.gridMapArray.Dispose();
     }
 
     public static float2 CalculateVector(int fromX, int fromY, int toX, int toY)
