@@ -52,7 +52,14 @@ public class GridSystemDebug : MonoBehaviour
                 GridSystemDebugSingle gridSystemDebugSingle = gridSystemDebugSingleArray[x, y];
 
                 int index = GridSystem.CalculateIndex(x, y, gridSystemData.width);
-                Entity entity = gridSystemData.gridMap.gridEntityArray[index];
+
+                int gridIndex = gridSystemData.nextGridMapArrayIndex - 1;
+                if(gridIndex < 0)
+                {
+                    gridIndex = 0;
+                }
+
+                Entity entity = gridSystemData.gridMapArray[gridIndex].gridEntityArray[index];
                 GridSystem.GridNode gridNode = entityManager.GetComponentData<GridSystem.GridNode>(entity);
                 if(gridNode.cost == 0)
                 {
