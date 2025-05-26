@@ -24,6 +24,8 @@ public partial struct GridSystem : ISystem
     public struct GridMap
     {
         public NativeArray<Entity> gridEntityArray;
+        public int2 targetGridNodePosition;
+        public bool isValid;
     }
 
     public struct GridNode : IComponentData
@@ -53,6 +55,7 @@ public partial struct GridSystem : ISystem
         for(int i = 0; i < FLOW_FIELD_MAP_COUNT; i++)
         {
             GridMap gridMap = new GridMap();
+            gridMap.isValid = false;
             gridMap.gridEntityArray = new NativeArray<Entity>(totalCount, Allocator.Persistent);
 
             Entity gridNodeEntityPrefab = state.EntityManager.CreateEntity();
@@ -113,9 +116,27 @@ public partial struct GridSystem : ISystem
             int2 targetGridNodePosition = GetGridPosition(flowFieldPathRequest.ValueRO.targetPosition, gridSystemData.gridNodeSize);
             flowFieldPathRequestEnabled.ValueRW = false;
 
+            bool alreadyCalculatedPath = false;
+            for(int i = 0; i < FLOW_FIELD_MAP_COUNT; i++)
+            {
+                if (gridSystemData.gridMapArray[i].isValid && gridSystemData.gridMapArray[i].targetGridNodePosition.Equals(targetGridNodePosition))
+                {
+                    flowFieldFollower.ValueRW.gridIndex = i;
+                    flowFieldFollower.ValueRW.targetPosition = flowFieldPathRequest.ValueRO.targetPosition;
+                    flowFieldFollowerEnabled.ValueRW = true;
+
+                    alreadyCalculatedPath = true;
+                    break;
+                }
+            }
+
+            if (alreadyCalculatedPath)
+            {
+                continue;
+            }
+
             int gridIndex = gridSystemData.nextGridMapArrayIndex;
             gridSystemData.nextGridMapArrayIndex = (gridSystemData.nextGridMapArrayIndex + 1) % FLOW_FIELD_MAP_COUNT;
-            SystemAPI.SetComponent(state.SystemHandle, gridSystemData);
 
             Debug.Log("Calculating target position: " + targetGridNodePosition + " :: " + gridIndex);
 
@@ -220,6 +241,12 @@ public partial struct GridSystem : ISystem
 
             gridNodeOpenQueue.Dispose();
             gridNodeArray.Dispose();
+
+            GridMap gridMap = gridSystemData.gridMapArray[gridIndex];
+            gridMap.targetGridNodePosition = targetGridNodePosition;
+            gridMap.isValid = true;
+            gridSystemData.gridMapArray[gridIndex] = gridMap;
+            SystemAPI.SetComponent(state.SystemHandle, gridSystemData);
         }
 
 #if(GridDebug)
