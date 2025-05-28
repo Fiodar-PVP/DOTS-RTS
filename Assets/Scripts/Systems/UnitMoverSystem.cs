@@ -29,7 +29,8 @@ partial struct UnitMoverSystem : ISystem
             EnabledRefRW<TargetPositionPathQueued> targetPositionPathQueuedEnabled,
             RefRW<FlowFieldPathRequest> flowFieldPathRequest,
             EnabledRefRW<FlowFieldPathRequest> flowFieldPathRequestEnabled,
-            EnabledRefRW<FlowFieldFollower> flowFieldFollowerEnabled)
+            EnabledRefRW<FlowFieldFollower> flowFieldFollowerEnabled,
+            Entity entity)
             in SystemAPI.Query<
                 RefRW<UnitMover>,
                 RefRO<LocalTransform>,
@@ -37,7 +38,7 @@ partial struct UnitMoverSystem : ISystem
                 EnabledRefRW<TargetPositionPathQueued>,
                 RefRW<FlowFieldPathRequest>,
                 EnabledRefRW<FlowFieldPathRequest>,
-                EnabledRefRW<FlowFieldFollower>>().WithPresent<FlowFieldPathRequest, FlowFieldFollower>())
+                EnabledRefRW<FlowFieldFollower>>().WithPresent<FlowFieldPathRequest, FlowFieldFollower>().WithEntityAccess())
         {
             RaycastInput raycastInput = new RaycastInput
             {
@@ -61,9 +62,26 @@ partial struct UnitMoverSystem : ISystem
             }
             else
             {
-                //There is a wall, need to calculate Flow Field 
-                flowFieldPathRequest.ValueRW.targetPosition = targetPositionPathQueued.ValueRO.targetPosition;
-                flowFieldPathRequestEnabled.ValueRW = true;
+                //There is a wall in between we need to use PathFinding
+                if (SystemAPI.HasComponent<MoveOverride>(entity))
+                {
+                    SystemAPI.SetComponentEnabled<MoveOverride>(entity, false);
+                }
+
+                if (!GridSystem.IsValidWalkableGridPosition(targetPositionPathQueued.ValueRO.targetPosition, gridSystemData))
+                {
+                    //Target position is unwalkable grid node
+                    unitMover.ValueRW.targetPosition = localTransform.ValueRO.Position;
+
+                    flowFieldPathRequestEnabled.ValueRW = false;
+                    flowFieldFollowerEnabled.ValueRW = false;
+                }
+                else
+                {
+                    //There is a wall, need to calculate Flow Field 
+                    flowFieldPathRequest.ValueRW.targetPosition = targetPositionPathQueued.ValueRO.targetPosition;
+                    flowFieldPathRequestEnabled.ValueRW = true;
+                }
             }
 
             targetPositionPathQueuedEnabled.ValueRW = false;
