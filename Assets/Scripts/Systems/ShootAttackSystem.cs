@@ -17,15 +17,19 @@ partial struct ShootAttackSystem : ISystem
         EntitiesReferences entitiesReferences = SystemAPI.GetSingleton<EntitiesReferences>();
         foreach((
             RefRW<LocalTransform> localTransform, 
-            RefRW<UnitMover> unitMover, 
-            RefRW<ShootAttack> shootAttack, 
+            RefRW<UnitMover> unitMover,
+            RefRW<TargetPositionPathQueued> targetPositionPathQueued,
+            EnabledRefRW<TargetPositionPathQueued> targetPositionPathQueuedEnabled,
+            RefRW <ShootAttack> shootAttack, 
             RefRO<Target> target) 
             in SystemAPI.Query<
                 RefRW<LocalTransform>, 
-                RefRW<UnitMover>, 
+                RefRW<UnitMover>,
+                RefRW<TargetPositionPathQueued>,
+                EnabledRefRW<TargetPositionPathQueued>,
                 RefRW<ShootAttack>, 
                 RefRO<Target>>().
-                WithDisabled<MoveOverride>())
+                WithDisabled<MoveOverride>().WithPresent<TargetPositionPathQueued>())
         {
             if(target.ValueRO.targetEntity == Entity.Null)
             {
@@ -36,13 +40,15 @@ partial struct ShootAttackSystem : ISystem
             if(shootAttack.ValueRO.attackDistanceSq < math.distancesq(targetLocalTransform.Position, localTransform.ValueRO.Position))
             {
                 //Too far to shoot, move closer
-                unitMover.ValueRW.targetPosition = targetLocalTransform.Position;
+                targetPositionPathQueued.ValueRW.targetPosition = targetLocalTransform.Position;
+                targetPositionPathQueuedEnabled.ValueRW = true;
                 continue;
             }
             else
             {
                 //Stop and shoot
-                unitMover.ValueRW.targetPosition = localTransform.ValueRO.Position;
+                targetPositionPathQueued.ValueRW.targetPosition = localTransform.ValueRO.Position;
+                targetPositionPathQueuedEnabled.ValueRW = true;
             }
 
             float3 aimDirection = targetLocalTransform.Position - localTransform.ValueRO.Position;

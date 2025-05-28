@@ -14,8 +14,19 @@ partial struct MeleeAttackSystem : ISystem
         CollisionWorld collisionWorld = physicsWorldSingleton.CollisionWorld;
         NativeList<RaycastHit> raycastHitList = new NativeList<RaycastHit>(Allocator.Temp);
 
-        foreach ((RefRO<LocalTransform> localTransform, RefRW<MeleeAttack> meleeAttack, RefRO<Target> target, RefRW<UnitMover> unitMover) in 
-            SystemAPI.Query<RefRO<LocalTransform>, RefRW<MeleeAttack>, RefRO<Target>, RefRW<UnitMover>>().WithDisabled<MoveOverride>())
+        foreach ((
+            RefRO<LocalTransform> localTransform,
+            RefRW<MeleeAttack> meleeAttack,
+            RefRO<Target> target,
+            RefRW<TargetPositionPathQueued> targetPositionPathQueued,
+            EnabledRefRW<TargetPositionPathQueued> targetPositionPathQueuedEnabled)
+            in SystemAPI.Query<
+                RefRO<LocalTransform>,
+                RefRW<MeleeAttack>,
+                RefRO<Target>,
+                RefRW<TargetPositionPathQueued>,
+                EnabledRefRW<TargetPositionPathQueued>>().
+                WithDisabled<MoveOverride>().WithPresent<TargetPositionPathQueued>())
         {
             if(target.ValueRO.targetEntity == Entity.Null)
             {
@@ -57,7 +68,8 @@ partial struct MeleeAttackSystem : ISystem
             if (isCloseEnoughToAttack || isTouchingTarget)
             {
                 //Close enough to attack
-                unitMover.ValueRW.targetPosition = localTransform.ValueRO.Position;
+                targetPositionPathQueued.ValueRW.targetPosition = localTransform.ValueRO.Position;
+                targetPositionPathQueuedEnabled.ValueRW = true;
 
                 meleeAttack.ValueRW.timer -= SystemAPI.Time.DeltaTime;
                 if(meleeAttack.ValueRO.timer > 0)
@@ -75,7 +87,8 @@ partial struct MeleeAttackSystem : ISystem
             else
             {
                 //Too far, move closer
-                unitMover.ValueRW.targetPosition = targetLocalTransform.Position;
+                targetPositionPathQueued.ValueRW.targetPosition = targetLocalTransform.Position;
+                targetPositionPathQueuedEnabled.ValueRW = true;
             }
         }
     }
