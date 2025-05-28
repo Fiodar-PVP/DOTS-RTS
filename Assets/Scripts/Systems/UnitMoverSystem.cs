@@ -28,14 +28,16 @@ partial struct UnitMoverSystem : ISystem
             RefRW<TargetPositionPathQueued> targetPositionPathQueued,
             EnabledRefRW<TargetPositionPathQueued> targetPositionPathQueuedEnabled,
             RefRW<FlowFieldPathRequest> flowFieldPathRequest,
-            EnabledRefRW<FlowFieldPathRequest> flowFieldPathRequestEnabled)
+            EnabledRefRW<FlowFieldPathRequest> flowFieldPathRequestEnabled,
+            EnabledRefRW<FlowFieldFollower> flowFieldFollowerEnabled)
             in SystemAPI.Query<
                 RefRW<UnitMover>,
                 RefRO<LocalTransform>,
                 RefRW<TargetPositionPathQueued>,
                 EnabledRefRW<TargetPositionPathQueued>,
                 RefRW<FlowFieldPathRequest>,
-                EnabledRefRW<FlowFieldPathRequest>>().WithPresent<FlowFieldPathRequest>())
+                EnabledRefRW<FlowFieldPathRequest>,
+                EnabledRefRW<FlowFieldFollower>>().WithPresent<FlowFieldPathRequest, FlowFieldFollower>())
         {
             RaycastInput raycastInput = new RaycastInput
             {
@@ -53,6 +55,9 @@ partial struct UnitMoverSystem : ISystem
             {
                 //There is no wall on the way, no need to use PathFinding
                 unitMover.ValueRW.targetPosition = targetPositionPathQueued.ValueRO.targetPosition;
+
+                flowFieldPathRequestEnabled.ValueRW = false;
+                flowFieldFollowerEnabled.ValueRW = false;
             }
             else
             {

@@ -8,8 +8,18 @@ partial struct RandomWalkingSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        foreach((RefRO<LocalTransform> localTransform, RefRW<RandomWalking> randomWalking, RefRW<UnitMover> unitMover, RefRO<Target> target) in 
-            SystemAPI.Query<RefRO<LocalTransform>, RefRW<RandomWalking>, RefRW<UnitMover>, RefRO<Target>>())
+        foreach((
+            RefRO<LocalTransform> localTransform,
+            RefRW<RandomWalking> randomWalking,
+            RefRW<TargetPositionPathQueued> targetPositionPathQueued,
+            EnabledRefRW<TargetPositionPathQueued> targetPositionPathQueuedEnabled,
+            RefRO<Target> target)
+            in SystemAPI.Query<
+                RefRO<LocalTransform>,
+                RefRW<RandomWalking>,
+                RefRW<TargetPositionPathQueued>,
+                EnabledRefRW<TargetPositionPathQueued>,
+                RefRO <Target>>().WithPresent<TargetPositionPathQueued>())
         {
             if(target.ValueRO.targetEntity != Entity.Null)
             {
@@ -33,7 +43,8 @@ partial struct RandomWalkingSystem : ISystem
             else
             {
                 //Too far, move closer
-                unitMover.ValueRW.targetPosition = randomWalking.ValueRO.targetPosition;
+                targetPositionPathQueued.ValueRW.targetPosition = randomWalking.ValueRO.targetPosition;
+                targetPositionPathQueuedEnabled.ValueRW = true;
             }
         }
     }
