@@ -49,7 +49,12 @@ partial struct MeleeAttackSystem : ISystem
                 {
                     Start = localTransform.ValueRO.Position,
                     End = localTransform.ValueRO.Position + dirToTarget * (meleeAttack.ValueRO.colliderSize + extraDistanceToTestRaycast),
-                    Filter = CollisionFilter.Default
+                    Filter = new CollisionFilter
+                    {
+                        BelongsTo = ~0u,
+                        CollidesWith = 1u << GameAssets.BUILDINGS_LAYER | 1u << GameAssets.UNIT_LAYER,
+                        GroupIndex = 0,
+                    }
                 };
 
                 raycastHitList.Clear();
