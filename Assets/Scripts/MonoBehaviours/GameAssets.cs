@@ -7,6 +7,7 @@ public class GameAssets : MonoBehaviour
     public const int PATHFINDING_WALL_LAYER = 8;
     public const int PATHFINDING_HEAVY_LAYER = 9;
     public const int FOG_OF_WAR_LAYER = 11;
+    public const int RESOURCE_LAYER = 13;
 
     public static GameAssets Instance { get; private set; }
 
