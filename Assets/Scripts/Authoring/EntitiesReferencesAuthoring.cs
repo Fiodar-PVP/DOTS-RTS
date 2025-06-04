@@ -11,6 +11,9 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
 
     [SerializeField] private GameObject buildingBarrackPrefab;
     [SerializeField] private GameObject buildingTowerPrefab;
+    [SerializeField] private GameObject buildingIronHarvesterPrefab;
+    [SerializeField] private GameObject buildingGoldHarvesterPrefab;
+    [SerializeField] private GameObject buildingOilHarvesterPrefab;
 
     public class Baker : Baker<EntitiesReferencesAuthoring>
     {
@@ -27,6 +30,9 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
 
                 barrackPrefabEntity = GetEntity(authoring.buildingBarrackPrefab, TransformUsageFlags.Dynamic),
                 towerPrefabEntity = GetEntity(authoring.buildingTowerPrefab, TransformUsageFlags.Dynamic),
+                ironHarvesterPrefabEntity = GetEntity(authoring.buildingIronHarvesterPrefab, TransformUsageFlags.Dynamic),
+                goldHarvesterPrefabEntity = GetEntity(authoring.buildingGoldHarvesterPrefab, TransformUsageFlags.Dynamic),
+                oilHarvesterPrefabEntity = GetEntity(authoring.buildingOilHarvesterPrefab, TransformUsageFlags.Dynamic),
             });
         }
     }
@@ -42,4 +48,7 @@ public struct EntitiesReferences : IComponentData
 
     public Entity barrackPrefabEntity;
     public Entity towerPrefabEntity;
+    public Entity ironHarvesterPrefabEntity;
+    public Entity goldHarvesterPrefabEntity;
+    public Entity oilHarvesterPrefabEntity;
 }

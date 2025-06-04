@@ -4,5 +4,8 @@ public enum BuildingType
     ZombieSpawner,
     Tower,
     Barrack,
-    HQ
+    HQ,
+    IronHarvester,
+    GoldHarvester,
+    OilHarvester
 }

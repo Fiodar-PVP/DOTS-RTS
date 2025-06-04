@@ -20,6 +20,9 @@ public class BuildingDataSO : ScriptableObject
             case BuildingType.ZombieSpawner:
             case BuildingType.Barrack : return entitiesReferences.barrackPrefabEntity;
             case BuildingType.Tower : return entitiesReferences.towerPrefabEntity;
+            case BuildingType.IronHarvester : return entitiesReferences.ironHarvesterPrefabEntity;
+            case BuildingType.GoldHarvester : return entitiesReferences.goldHarvesterPrefabEntity;
+            case BuildingType.OilHarvester : return entitiesReferences.oilHarvesterPrefabEntity;
         }
     }
 

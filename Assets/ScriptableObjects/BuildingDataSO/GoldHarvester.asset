@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 042d41aaa267740f1b7e9b9e6d6e17fc, type: 3}
+  m_Name: GoldHarvester
+  m_EditorClassIdentifier: 
+  buildingType: 6
+  prefab: {fileID: 4912205711168604918, guid: 47880c95015434da38f52757f60636f5, type: 3}
+  buildingDistanceMin: 10
+  shouldShowInBuildingPlacementManager: 1
+  sprite: {fileID: 21300000, guid: 8fe1774abab81cf42b56f4366489453b, type: 3}
+  ghostPrefab: {fileID: 6489063184693368259, guid: d92e1b4fc516b61468081516cc5c14f1, type: 3}
+  harvestableResourceType: 2
+  harvestDistanceMin: 7
