@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: GoldHarvester
   m_EditorClassIdentifier: 
   buildingType: 6
+  constructionTimerMax: 10
+  constructionYOffset: -5.4
   prefab: {fileID: 4912205711168604918, guid: 47880c95015434da38f52757f60636f5, type: 3}
   buildingDistanceMin: 10
   shouldShowInBuildingPlacementManager: 1
