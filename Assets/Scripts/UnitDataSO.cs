@@ -7,6 +7,7 @@ public class UnitDataSO : ScriptableObject
     public UnitType unitType;
     public float progressMax;
     public Sprite sprite;
+    public ResourceAmount[] spawnCostResourceAmountArray;
 
     public Entity GetPrefabEntity(EntitiesReferences entitiesReferences)
     {

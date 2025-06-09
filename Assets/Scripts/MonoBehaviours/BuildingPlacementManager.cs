@@ -46,19 +46,23 @@ public class BuildingPlacementManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (!CanPlaceBuilding())
+            if (ResourceManager.Instance.CanSpendResourceAmount(buildingDataSO.buildCostResourceAmountArray))
             {
-                return;
+                if (!CanPlaceBuilding())
+                {
+                    return;
+                }
+
+                ResourceManager.Instance.SpendResourceAmount(buildingDataSO.buildCostResourceAmountArray);
+                Vector3 mouseWorldPosition = MouseWorldPosition.Instance.GetPosition();
+
+                EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+                EntityQuery entityQuery = new EntityQueryBuilder(Allocator.Temp).WithAll<EntitiesReferences>().Build(entityManager);
+                EntitiesReferences entitiesReferences = entityQuery.GetSingleton<EntitiesReferences>();
+
+                Entity spawnedEntity = entityManager.Instantiate(buildingDataSO.GetEntityPrefab(entitiesReferences));
+                entityManager.SetComponentData(spawnedEntity, LocalTransform.FromPosition(mouseWorldPosition));
             }
-
-            Vector3 mouseWorldPosition = MouseWorldPosition.Instance.GetPosition();
-
-            EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-            EntityQuery entityQuery = new EntityQueryBuilder(Allocator.Temp).WithAll<EntitiesReferences>().Build(entityManager);
-            EntitiesReferences entitiesReferences = entityQuery.GetSingleton<EntitiesReferences>();
-
-            Entity spawnedEntity = entityManager.Instantiate(buildingDataSO.GetEntityPrefab(entitiesReferences));
-            entityManager.SetComponentData(spawnedEntity, LocalTransform.FromPosition(mouseWorldPosition));
         }
     }
 

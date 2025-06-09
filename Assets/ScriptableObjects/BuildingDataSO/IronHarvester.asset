@@ -18,5 +18,8 @@ MonoBehaviour:
   shouldShowInBuildingPlacementManager: 1
   sprite: {fileID: 21300000, guid: d68723ce033c83c45b0fd17e2ab8404d, type: 3}
   ghostPrefab: {fileID: 8686191080717679773, guid: 986eac81f4856df47bacc9ed8bf0ea6d, type: 3}
+  buildCostResourceAmountArray:
+  - resourceType: 2
+    amount: 15
   harvestableResourceType: 1
   harvestDistanceMin: 7

@@ -18,14 +18,26 @@ public class BuildingBarrackUI : MonoBehaviour
     {
         soldierButton.onClick.AddListener(() =>
         {
-            entityManager.SetComponentData(buildingBarrackEntity, new BuildingBarrackUnitEnqueue { unitType = UnitType.Soldier });
-            entityManager.SetComponentEnabled<BuildingBarrackUnitEnqueue>(buildingBarrackEntity, true);
+            UnitDataSO unitDataSO = GameAssets.Instance.unitTypeSOList.GetUnitDataSO(UnitType.Soldier);
+
+            if(ResourceManager.Instance.CanSpendResourceAmount(unitDataSO.spawnCostResourceAmountArray))
+            {
+                ResourceManager.Instance.SpendResourceAmount(unitDataSO.spawnCostResourceAmountArray);
+                entityManager.SetComponentData(buildingBarrackEntity, new BuildingBarrackUnitEnqueue { unitType = UnitType.Soldier });
+                entityManager.SetComponentEnabled<BuildingBarrackUnitEnqueue>(buildingBarrackEntity, true);
+            }
         });
 
         scoutButton.onClick.AddListener(() =>
         {
-            entityManager.SetComponentData(buildingBarrackEntity, new BuildingBarrackUnitEnqueue { unitType = UnitType.Scout });
-            entityManager.SetComponentEnabled<BuildingBarrackUnitEnqueue>(buildingBarrackEntity, true);
+            UnitDataSO unitDataSO = GameAssets.Instance.unitTypeSOList.GetUnitDataSO(UnitType.Scout);
+
+            if (ResourceManager.Instance.CanSpendResourceAmount(unitDataSO.spawnCostResourceAmountArray))
+            {
+                ResourceManager.Instance.SpendResourceAmount(unitDataSO.spawnCostResourceAmountArray);
+                entityManager.SetComponentData(buildingBarrackEntity, new BuildingBarrackUnitEnqueue { unitType = UnitType.Scout });
+                entityManager.SetComponentEnabled<BuildingBarrackUnitEnqueue>(buildingBarrackEntity, true);
+            }
         });
 
         unitQueueTemplate.gameObject.SetActive(false);
