@@ -5,6 +5,7 @@ using UnityEngine;
 public class UnitDataSO : ScriptableObject
 {
     public UnitType unitType;
+    public Transform ragdollPrefab;
     public float progressMax;
     public Sprite sprite;
     public ResourceAmount[] spawnCostResourceAmountArray;
