@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: IronHarvester
   m_EditorClassIdentifier: 
   buildingType: 5
+  constructionTimerMax: 10
+  constructionYOffset: -2.6
   prefab: {fileID: 1453609914538181815, guid: 6835ab04d10de4fc7bcf2c8da4e7ca5f, type: 3}
   buildingDistanceMin: 10
   shouldShowInBuildingPlacementManager: 1

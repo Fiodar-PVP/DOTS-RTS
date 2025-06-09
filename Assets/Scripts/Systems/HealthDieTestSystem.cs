@@ -8,6 +8,8 @@ partial struct HealthDieTestSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
+        EntityCommandBuffer entityCommandBuffer = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+
         NativeList<Entity> entityList = new NativeList<Entity>(Allocator.Temp);
 
         foreach((RefRW<Health> health, Entity entity) in SystemAPI.Query<RefRW<Health>>().WithEntityAccess())
@@ -16,10 +18,15 @@ partial struct HealthDieTestSystem : ISystem
             {
                 health.ValueRW.onDead = true;
                 entityList.Add(entity);
+
+                if (SystemAPI.HasComponent<BuildingConstruction>(entity))
+                {
+                    BuildingConstruction buildingConstruction = SystemAPI.GetComponent<BuildingConstruction>(entity);
+                    entityCommandBuffer.DestroyEntity(buildingConstruction.visualEntity);
+                }
             }
         }
 
-        EntityCommandBuffer entityCommandBuffer = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
         entityCommandBuffer.DestroyEntity(entityList.AsArray());
     }
 }

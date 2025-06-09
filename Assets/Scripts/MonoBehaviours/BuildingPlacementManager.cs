@@ -60,8 +60,20 @@ public class BuildingPlacementManager : MonoBehaviour
                 EntityQuery entityQuery = new EntityQueryBuilder(Allocator.Temp).WithAll<EntitiesReferences>().Build(entityManager);
                 EntitiesReferences entitiesReferences = entityQuery.GetSingleton<EntitiesReferences>();
 
-                Entity spawnedEntity = entityManager.Instantiate(buildingDataSO.GetEntityPrefab(entitiesReferences));
-                entityManager.SetComponentData(spawnedEntity, LocalTransform.FromPosition(mouseWorldPosition));
+                Entity visualEntity = entityManager.Instantiate(buildingDataSO.GetEntityVisualPrefab(entitiesReferences));
+                entityManager.SetComponentData(visualEntity, LocalTransform.FromPosition(mouseWorldPosition + new Vector3(0, buildingDataSO.constructionYOffset, 0)));
+
+                Entity constructionEntity = entityManager.Instantiate(entitiesReferences.buildingConstructionPrefabEntity);
+                entityManager.SetComponentData(constructionEntity, LocalTransform.FromPosition(mouseWorldPosition));
+                entityManager.SetComponentData(constructionEntity, new BuildingConstruction
+                {
+                    buildingType = buildingDataSO.buildingType,
+                    constructionTimerMax = buildingDataSO.constructionTimerMax,
+                    startPosition = mouseWorldPosition + new Vector3(0, buildingDataSO.constructionYOffset, 0),
+                    endPosition = mouseWorldPosition,
+                    finalPrefabEntity = buildingDataSO.GetEntityPrefab(entitiesReferences),
+                    visualEntity = visualEntity
+                });
             }
         }
     }
@@ -101,6 +113,17 @@ public class BuildingPlacementManager : MonoBehaviour
                     BuildingType buildingType = entitymanager.GetComponentData<BuildingTypeHolder>(distanceHit.Entity).buildingType;
 
                     if(buildingType == buildingDataSO.buildingType)
+                    {
+                        //Same building type is too close
+                        return false;
+                    }
+                }
+
+                if (entitymanager.HasComponent<BuildingConstruction>(distanceHit.Entity))
+                {
+                    BuildingConstruction buildingConstruction = entitymanager.GetComponentData<BuildingConstruction>(distanceHit.Entity);
+
+                    if (buildingConstruction.buildingType == buildingDataSO.buildingType)
                     {
                         //Same building type is too close
                         return false;

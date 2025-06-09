@@ -15,6 +15,14 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
     [SerializeField] private GameObject buildingGoldHarvesterPrefab;
     [SerializeField] private GameObject buildingOilHarvesterPrefab;
 
+    [SerializeField] private GameObject buildingBarrackVisualPrefab;
+    [SerializeField] private GameObject buildingTowerVisualPrefab;
+    [SerializeField] private GameObject buildingIronHarvesterVisualPrefab;
+    [SerializeField] private GameObject buildingGoldHarvesterVisualPrefab;
+    [SerializeField] private GameObject buildingOilHarvesterVisualPrefab;
+
+    [SerializeField] private GameObject buildingConstructionPrefab;
+
     public class Baker : Baker<EntitiesReferencesAuthoring>
     {
         public override void Bake(EntitiesReferencesAuthoring authoring)
@@ -33,6 +41,14 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
                 ironHarvesterPrefabEntity = GetEntity(authoring.buildingIronHarvesterPrefab, TransformUsageFlags.Dynamic),
                 goldHarvesterPrefabEntity = GetEntity(authoring.buildingGoldHarvesterPrefab, TransformUsageFlags.Dynamic),
                 oilHarvesterPrefabEntity = GetEntity(authoring.buildingOilHarvesterPrefab, TransformUsageFlags.Dynamic),
+
+                barrackVisualPrefabEntity = GetEntity(authoring.buildingBarrackVisualPrefab, TransformUsageFlags.Dynamic),
+                towerVisualPrefabEntity = GetEntity(authoring.buildingTowerVisualPrefab, TransformUsageFlags.Dynamic),
+                ironHarvesterVisualPrefabEntity = GetEntity(authoring.buildingIronHarvesterVisualPrefab, TransformUsageFlags.Dynamic),
+                goldHarvesterVisualPrefabEntity = GetEntity(authoring.buildingGoldHarvesterVisualPrefab, TransformUsageFlags.Dynamic),
+                oilHarvesterVisualPrefabEntity = GetEntity(authoring.buildingOilHarvesterVisualPrefab, TransformUsageFlags.Dynamic),
+
+                buildingConstructionPrefabEntity = GetEntity(authoring.buildingConstructionPrefab, TransformUsageFlags.Dynamic)
             });
         }
     }
@@ -51,4 +67,12 @@ public struct EntitiesReferences : IComponentData
     public Entity ironHarvesterPrefabEntity;
     public Entity goldHarvesterPrefabEntity;
     public Entity oilHarvesterPrefabEntity;
+
+    public Entity barrackVisualPrefabEntity;
+    public Entity towerVisualPrefabEntity;
+    public Entity ironHarvesterVisualPrefabEntity;
+    public Entity goldHarvesterVisualPrefabEntity;
+    public Entity oilHarvesterVisualPrefabEntity;
+
+    public Entity buildingConstructionPrefabEntity;
 }

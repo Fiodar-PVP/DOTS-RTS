@@ -415,6 +415,12 @@ MonoBehaviour:
   buildingIronHarvesterPrefab: {fileID: 5989830629800132015, guid: 6835ab04d10de4fc7bcf2c8da4e7ca5f, type: 3}
   buildingGoldHarvesterPrefab: {fileID: 7225750505585132660, guid: 47880c95015434da38f52757f60636f5, type: 3}
   buildingOilHarvesterPrefab: {fileID: 8295827781707107274, guid: 0f333421692af44d4a5c808b2e32d073, type: 3}
+  buildingBarrackVisualPrefab: {fileID: 715989064538214012, guid: d5f97a2fd6630b34982aaca8876d69ef, type: 3}
+  buildingTowerVisualPrefab: {fileID: 5799947214760584452, guid: 4dbe3453c2a716743b0db56f6ced9c3b, type: 3}
+  buildingIronHarvesterVisualPrefab: {fileID: 184314028090552627, guid: 986eac81f4856df47bacc9ed8bf0ea6d, type: 3}
+  buildingGoldHarvesterVisualPrefab: {fileID: 4499998760003975059, guid: d92e1b4fc516b61468081516cc5c14f1, type: 3}
+  buildingOilHarvesterVisualPrefab: {fileID: 4785703203425898357, guid: 2e71adb493af6ac46980b7cb9775dd45, type: 3}
+  buildingConstructionPrefab: {fileID: 437491248995463288, guid: 32c07e572e7ca4292bb44d42d8e3fe14, type: 3}
 --- !u!4 &401350612
 Transform:
   m_ObjectHideFlags: 0
