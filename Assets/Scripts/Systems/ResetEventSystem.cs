@@ -8,12 +8,14 @@ partial struct ResetEventSystem : ISystem
 {
     private NativeArray<JobHandle> jobHandleNativeArray;
     private NativeList<Entity> onBuildingBarrackUnitEnqueueChangedEntityList;
+    private NativeList<Entity> onHealthDeadEntityList;
 
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        jobHandleNativeArray = new NativeArray<JobHandle>(4, Allocator.Domain);
+        jobHandleNativeArray = new NativeArray<JobHandle>(3, Allocator.Domain);
         onBuildingBarrackUnitEnqueueChangedEntityList = new NativeList<Entity>(Allocator.Domain);
+        onHealthDeadEntityList = new NativeList<Entity>(Allocator.Domain);
     }
 
     public void OnUpdate(ref SystemState state)
@@ -30,9 +32,16 @@ partial struct ResetEventSystem : ISystem
         }
 
         jobHandleNativeArray[0] = new ResetSeletedEventJob().ScheduleParallel(state.Dependency);
-        jobHandleNativeArray[1] = new ResetHealthEventJob().ScheduleParallel(state.Dependency);
-        jobHandleNativeArray[2] = new ResetShootAttackEventJob().ScheduleParallel(state.Dependency);
-        jobHandleNativeArray[3] = new ResetMeleeAttackEventJob().ScheduleParallel(state.Dependency);
+        jobHandleNativeArray[1] = new ResetShootAttackEventJob().ScheduleParallel(state.Dependency);
+        jobHandleNativeArray[2] = new ResetMeleeAttackEventJob().ScheduleParallel(state.Dependency);
+
+        onHealthDeadEntityList.Clear();
+        new ResetHealthEventJob
+        {
+            onHealthDeadEntityList = onHealthDeadEntityList.AsParallelWriter()
+        }.ScheduleParallel(state.Dependency).Complete();
+
+        DOTSEventManager.Instance.TriggerOnHealthDead(onHealthDeadEntityList);
 
         onBuildingBarrackUnitEnqueueChangedEntityList.Clear();
         new ResetBuildingBarrackEventJob
@@ -49,6 +58,7 @@ partial struct ResetEventSystem : ISystem
     {
         jobHandleNativeArray.Dispose();
         onBuildingBarrackUnitEnqueueChangedEntityList.Dispose();
+        onHealthDeadEntityList.Dispose();
     }
 }
 
@@ -66,8 +76,15 @@ public partial struct ResetSeletedEventJob : IJobEntity
 [BurstCompile]
 public partial struct ResetHealthEventJob : IJobEntity
 {
-    public void Execute(ref Health health)
+    public NativeList<Entity>.ParallelWriter onHealthDeadEntityList;
+
+    public void Execute(ref Health health, Entity entity)
     {
+        if (health.onDead)
+        {
+            onHealthDeadEntityList.AddNoResize(entity);
+        }
+
         health.onHealthChanged = false;
         health.onDead = false;
     }
