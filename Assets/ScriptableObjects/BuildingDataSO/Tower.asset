@@ -18,3 +18,8 @@ MonoBehaviour:
   shouldShowInBuildingPlacementManager: 1
   sprite: {fileID: 21300000, guid: 251009f30697ae940904ab5c27e31833, type: 3}
   ghostPrefab: {fileID: 797814922017616551, guid: 4dbe3453c2a716743b0db56f6ced9c3b, type: 3}
+  buildCostResourceAmountArray:
+  - resourceType: 1
+    amount: 10
+  - resourceType: 2
+    amount: 5
