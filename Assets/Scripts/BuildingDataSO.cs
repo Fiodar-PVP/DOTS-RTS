@@ -10,6 +10,7 @@ public class BuildingDataSO : ScriptableObject
     public bool shouldShowInBuildingPlacementManager;
     public Sprite sprite;
     public Transform ghostPrefab;
+    public ResourceAmount[] buildCostResourceAmountArray;
 
     public Entity GetEntityPrefab(EntitiesReferences entitiesReferences)
     {
